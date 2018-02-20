@@ -1,0 +1,2421 @@
+#1
+char Aclass(3,24)
+Adymosim
+1.4
+Modelica experiment file
+
+
+#    Experiment parameters
+double experiment(7,1)
+       0                   # StartTime    Time at which integration starts
+                           #              (and linearization and trimming time)
+      14                   # StopTime     Time at which integration stops
+       0                   # Increment    Communication step size, if > 0
+     100                   # nInterval    Number of communication intervals, if > 0
+ 1.0000000000000000E-004   # Tolerance    Relative precision of signals for
+                           #              simulation, linearization and trimming
+       0                   # MaxFixedStep Maximum step size of fixed step size
+                           #              integrators, if > 0.0
+       4                   # Algorithm    Integration algorithm as integer (1...28)
+                           #
+                           #             | model|       |        | dense | state |
+                           # Algorithm   | typ  | stiff | order  | output| event |
+                           # ------------+------+-------+--------+-------+-------+
+                           #  1 | deabm  |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  2 | lsode1 |  ode |   no  |  1-12  |  yes  |   no  |
+                           #  3 | lsode2 |  ode |  yes  |  1-5   |  yes  |   no  |
+                           #  4 | lsodar |  ode |  both |1-12,1-5|  yes  |  yes  |
+                           #  5 | dopri5 |  ode |   no  |   5    |   no  |   no  |
+                           #  6 | dopri8 |  ode |   no  |   8    |   no  |   no  |
+                           #  7 | grk4t  |  ode |  yes  |   4    |   no  |   no  |
+                           #  8 | dassl  |  dae |  yes  |  1-5   |  yes  |  yes  |
+                           #  9 | odassl | hdae |  yes  |  1-5   |  yes  |  yes  |
+                           # 10 | mexx   | hdae |   no  |  2-24  |   no  |   no  |
+                           # 11 | euler  |  ode |   no  |   1    |   no  |  yes  |
+                           # 12 | rkfix2 |  ode |   no  |   2    |   no  |  yes  |
+                           # 13 | rkfix3 |  ode |   no  |   3    |   no  |  yes  |
+                           # 14 | rkfix4 |  ode |   no  |   4    |   no  |  yes  |
+                           #>=14| others |  ode |yes/no |  2-5   |   yes |  yes  |
+                           # ---+--------+------+-------+--------+-------+-------+
+                           # euler and rkfix have fixed stepsize.
+
+
+#    Method tuning parameters
+double method(27,1)
+       1                   # grid     type of communication time grid, defined by
+                           #          = 1: equidistant points ("Increment/nInterval")
+                           #          = 2: vector of grid points ("tgrid")
+                           #          = 3: variable step integrator (automatically)
+                           #          = 4: model (call of "increment" in Dymola, e.g.
+                           #                      incr=Time > 2 then 0 else 0.1
+                           #                      dummy=increment(incr))
+                           #          grid = 1,3 is stopped by "StopTime"
+                           #          grid = 2   is stopped by "tgrid(last)"
+                           #          grid = 4   runs forever (stopped by model)
+       1                   # nt       Use every NT time instant, if grid = 3
+       3                   # dense    1/2/3 restart/step/interpolate GRID points
+       1                   # evgrid   0/1 do not/save event points in comm. time grid
+       1                   # evu      0/1 U-discontinuity does not/trigger events
+       0                   # evuord       U-discontinuity order to consider (0,1,...)
+       0                   # error    0/1/2 One message/warning/error messages
+       0                   # jac      0/1 Compute jacobian numerically/by BLOCKJ
+       0                   # xd0c     0/1 Compute/set XD0
+       0                   # f3       0/1 Ignore/use F3 of HDAE (= index 1)
+       0                   # f4       0/1 Ignore/use F4 of HDAE (= index 2)
+       0                   # f5       0/1 Ignore/use F5 of HDAE (= invar.)
+       0                   # debug    flags for debug information (1<<0 uses pdebug) 
+     100                   # pdebug       priority of debug information (1...100)
+       0                   # fmax     Maximum number of evaluations of BLOCKF, if > 0
+       0                   # ordmax   Maximum allowed integration order, if > 0
+       0                   # hmax     Maximum absolute stepsize, if > 0
+       0                   # hmin     Minimum absolute stepsize, if > 0 (use with care!)
+       0                   # h0       Stepsize to be attempted on first step, if > 0
+ 2.0000000000000000E-014   # teps     Bound to check, if 2 equal time instants
+ 1.0000000000000000E-010   # eveps    Hysteresis epsilon at event points
+      20                   # eviter   Maximum number of event iterations
+ 9.9999999999999995E-007   # delaym   Minimum time increment in delay buffers
+       1                   # fexcep   0/1 floating exception crashes/stops dymosim
+       1                   # tscale   clock-time = tscale*simulation-time, if grid = 5
+                           #          > 1: simulation too slow
+                           #          = 1: simulation-time = real-time
+                           #          < 1: simulation too fast
+       1                   # shared   (not used)
+    2473                   # memkey   (not used)
+
+
+#    Output parameters
+int settings(13,1)
+ 0                         # lprec    0/1 do not/store result data in double
+ 1                         # lx       0/1 do not/store x  (state variables)
+ 1                         # lxd      0/1 do not/store xd (derivative of states)
+ 1                         # lu       0/1 do not/store u  (input     signals)
+ 1                         # ly       0/1 do not/store y  (output    signals)
+ 0                         # lz       0/1 do not/store z  (indicator signals)
+ 1                         # lw       0/1 do not/store w  (auxiliary signals)
+ 1                         # la       0/1 do not/store a  (alias     signals)
+ 0                         # lperf    0/1 do not/store performance indicators
+ 0                         # levent   0/1 do not/store event point
+ 1                         # lres     0/1 do not/store results on result file
+ 0                         # lshare   0/1 do not/store info data for shared memory on dsshare.txt
+ 1                         # lform    0/1 ASCII/Matlab-binary storage format of results
+                           #              (for simulation/linearization; not for trimming)
+
+
+#    Names of initial variables
+char initialName(754,30)
+Effluent.In.Q
+Effluent.In.Xi
+Effluent.In.Xs
+Effluent.In.Xbh
+Effluent.In.Xba
+Effluent.In.Xp
+Effluent.In.Xnd
+WasteSludge.In.Q
+WasteSludge.In.Xi
+WasteSludge.In.Xs
+WasteSludge.In.Xbh
+WasteSludge.In.Xba
+WasteSludge.In.Xp
+WasteSludge.In.Xnd
+Settler.rXi
+Settler.rXs
+Settler.rXbh
+Settler.rXba
+Settler.rXp
+Settler.rXnd
+Settler.hsc
+Settler.n
+Settler.zm
+Settler.Asc
+Settler.Xt
+Settler.Xf
+Settler.Feed.Q
+Settler.Return.Q
+Settler.Return.Xi
+Settler.Return.Xs
+Settler.Return.Xbh
+Settler.Return.Xba
+Settler.Return.Xp
+Settler.Return.Xnd
+Settler.S1.zm
+Settler.S1.Asc
+Settler.S1.X
+Settler.S1.der(X)
+Settler.S1.vS
+Settler.S1.Jsm
+Settler.S1.Si
+Settler.S1.der(Si)
+Settler.S1.Ss
+Settler.S1.der(Ss)
+Settler.S1.So
+Settler.S1.der(So)
+Settler.S1.Sno
+Settler.S1.der(Sno)
+Settler.S1.Snh
+Settler.S1.der(Snh)
+Settler.S1.Snd
+Settler.S1.der(Snd)
+Settler.S1.Salk
+Settler.S1.der(Salk)
+Settler.S1.Up.SedFlux
+Settler.S2.zm
+Settler.S2.Asc
+Settler.S2.X
+Settler.S2.der(X)
+Settler.S2.vS
+Settler.S2.Si
+Settler.S2.der(Si)
+Settler.S2.Ss
+Settler.S2.der(Ss)
+Settler.S2.So
+Settler.S2.der(So)
+Settler.S2.Sno
+Settler.S2.der(Sno)
+Settler.S2.Snh
+Settler.S2.der(Snh)
+Settler.S2.Snd
+Settler.S2.der(Snd)
+Settler.S2.Salk
+Settler.S2.der(Salk)
+Settler.S2.Up.SedFlux
+Settler.S3.zm
+Settler.S3.Asc
+Settler.S3.X
+Settler.S3.der(X)
+Settler.S3.vS
+Settler.S3.Si
+Settler.S3.der(Si)
+Settler.S3.Ss
+Settler.S3.der(Ss)
+Settler.S3.So
+Settler.S3.der(So)
+Settler.S3.Sno
+Settler.S3.der(Sno)
+Settler.S3.Snh
+Settler.S3.der(Snh)
+Settler.S3.Snd
+Settler.S3.der(Snd)
+Settler.S3.Salk
+Settler.S3.der(Salk)
+Settler.S3.Up.SedFlux
+Settler.S4.zm
+Settler.S4.Asc
+Settler.S4.X
+Settler.S4.der(X)
+Settler.S4.vS
+Settler.S4.Si
+Settler.S4.der(Si)
+Settler.S4.Ss
+Settler.S4.der(Ss)
+Settler.S4.So
+Settler.S4.der(So)
+Settler.S4.Sno
+Settler.S4.der(Sno)
+Settler.S4.Snh
+Settler.S4.der(Snh)
+Settler.S4.Snd
+Settler.S4.der(Snd)
+Settler.S4.Salk
+Settler.S4.der(Salk)
+Settler.S4.Up.SedFlux
+Settler.S5.zm
+Settler.S5.Asc
+Settler.S5.X
+Settler.S5.der(X)
+Settler.S5.vS
+Settler.S5.Si
+Settler.S5.der(Si)
+Settler.S5.Ss
+Settler.S5.der(Ss)
+Settler.S5.So
+Settler.S5.der(So)
+Settler.S5.Sno
+Settler.S5.der(Sno)
+Settler.S5.Snh
+Settler.S5.der(Snh)
+Settler.S5.Snd
+Settler.S5.der(Snd)
+Settler.S5.Salk
+Settler.S5.der(Salk)
+Settler.S5.Up.SedFlux
+Settler.S6.zm
+Settler.S6.Asc
+Settler.S6.X
+Settler.S6.der(X)
+Settler.S6.vS
+Settler.S6.Si
+Settler.S6.der(Si)
+Settler.S6.Ss
+Settler.S6.der(Ss)
+Settler.S6.So
+Settler.S6.der(So)
+Settler.S6.Sno
+Settler.S6.der(Sno)
+Settler.S6.Snh
+Settler.S6.der(Snh)
+Settler.S6.Snd
+Settler.S6.der(Snd)
+Settler.S6.Salk
+Settler.S6.der(Salk)
+Settler.S6.Up.SedFlux
+Settler.S7.zm
+Settler.S7.Asc
+Settler.S7.X
+Settler.S7.der(X)
+Settler.S7.vS
+Settler.S7.Si
+Settler.S7.der(Si)
+Settler.S7.Ss
+Settler.S7.der(Ss)
+Settler.S7.So
+Settler.S7.der(So)
+Settler.S7.Sno
+Settler.S7.der(Sno)
+Settler.S7.Snh
+Settler.S7.der(Snh)
+Settler.S7.Snd
+Settler.S7.der(Snd)
+Settler.S7.Salk
+Settler.S7.der(Salk)
+Settler.S7.Xt
+Settler.S7.Up.SedFlux
+Settler.S8.zm
+Settler.S8.Asc
+Settler.S8.X
+Settler.S8.der(X)
+Settler.S8.vS
+Settler.S8.Si
+Settler.S8.der(Si)
+Settler.S8.Ss
+Settler.S8.der(Ss)
+Settler.S8.So
+Settler.S8.der(So)
+Settler.S8.Sno
+Settler.S8.der(Sno)
+Settler.S8.Snh
+Settler.S8.der(Snh)
+Settler.S8.Snd
+Settler.S8.der(Snd)
+Settler.S8.Salk
+Settler.S8.der(Salk)
+Settler.S8.Xt
+Settler.S8.Up.SedFlux
+Settler.S9.zm
+Settler.S9.Asc
+Settler.S9.X
+Settler.S9.der(X)
+Settler.S9.vS
+Settler.S9.Si
+Settler.S9.der(Si)
+Settler.S9.Ss
+Settler.S9.der(Ss)
+Settler.S9.So
+Settler.S9.der(So)
+Settler.S9.Sno
+Settler.S9.der(Sno)
+Settler.S9.Snh
+Settler.S9.der(Snh)
+Settler.S9.Snd
+Settler.S9.der(Snd)
+Settler.S9.Salk
+Settler.S9.der(Salk)
+Settler.S9.Xt
+Settler.S9.Up.SedFlux
+Settler.S10.zm
+Settler.S10.Asc
+Settler.S10.X
+Settler.S10.der(X)
+Settler.S10.vS
+Settler.S10.Si
+Settler.S10.der(Si)
+Settler.S10.Ss
+Settler.S10.der(Ss)
+Settler.S10.So
+Settler.S10.der(So)
+Settler.S10.Sno
+Settler.S10.der(Sno)
+Settler.S10.Snh
+Settler.S10.der(Snh)
+Settler.S10.Snd
+Settler.S10.der(Snd)
+Settler.S10.Salk
+Settler.S10.der(Salk)
+Settler.S10.Xt
+divider.In.Q
+divider.Out2.Q
+tank5.Y_h
+tank5.Y_a
+tank5.f_p
+tank5.i_xb
+tank5.i_xp
+tank5.mu_h_T
+tank5.b_h_T
+tank5.mu_a_T
+tank5.b_a_T
+tank5.k_a_T
+tank5.k_h_T
+tank5.K_x_T
+tank5.K_nh
+tank5.K_s
+tank5.K_oh
+tank5.K_no
+tank5.K_oa
+tank5.ny_g
+tank5.ny_h
+tank5.Si
+tank5.der(Si)
+tank5.Ss
+tank5.der(Ss)
+tank5.Xi
+tank5.der(Xi)
+tank5.Xs
+tank5.der(Xs)
+tank5.Xbh
+tank5.der(Xbh)
+tank5.Xba
+tank5.der(Xba)
+tank5.Xp
+tank5.der(Xp)
+tank5.So
+tank5.der(So)
+tank5.Sno
+tank5.der(Sno)
+tank5.Snh
+tank5.der(Snh)
+tank5.Snd
+tank5.der(Snd)
+tank5.Xnd
+tank5.der(Xnd)
+tank5.Salk
+tank5.der(Salk)
+tank5.p1
+tank5.p2
+tank5.p3
+tank5.p4
+tank5.p5
+tank5.p6
+tank5.p7
+tank5.p8
+tank5.r1
+tank5.r2
+tank5.r3
+tank5.r4
+tank5.r5
+tank5.r6
+tank5.r7
+tank5.r8
+tank5.r9
+tank5.r10
+tank5.r11
+tank5.r12
+tank5.r13
+tank5.inputSs
+tank5.inputXs
+tank5.inputXbh
+tank5.inputXba
+tank5.inputXp
+tank5.inputSo
+tank5.inputSno
+tank5.inputSnh
+tank5.inputSnd
+tank5.inputXnd
+tank5.inputSalk
+tank5.aeration
+tank5.MeasurePort.Q
+tank5.V
+tank5.KLa
+tank5.de
+tank5.R_air
+tank5.So_sat
+tank5.AirIn.Q_air
+tank4.Y_h
+tank4.Y_a
+tank4.f_p
+tank4.i_xb
+tank4.i_xp
+tank4.mu_h_T
+tank4.b_h_T
+tank4.mu_a_T
+tank4.b_a_T
+tank4.k_a_T
+tank4.k_h_T
+tank4.K_x_T
+tank4.K_nh
+tank4.K_s
+tank4.K_oh
+tank4.K_no
+tank4.K_oa
+tank4.ny_g
+tank4.ny_h
+tank4.Si
+tank4.der(Si)
+tank4.Ss
+tank4.der(Ss)
+tank4.Xi
+tank4.der(Xi)
+tank4.Xs
+tank4.der(Xs)
+tank4.Xbh
+tank4.der(Xbh)
+tank4.Xba
+tank4.der(Xba)
+tank4.Xp
+tank4.der(Xp)
+tank4.So
+tank4.der(So)
+tank4.Sno
+tank4.der(Sno)
+tank4.Snh
+tank4.der(Snh)
+tank4.Snd
+tank4.der(Snd)
+tank4.Xnd
+tank4.der(Xnd)
+tank4.Salk
+tank4.der(Salk)
+tank4.p1
+tank4.p2
+tank4.p3
+tank4.p4
+tank4.p5
+tank4.p6
+tank4.p7
+tank4.p8
+tank4.r1
+tank4.r2
+tank4.r3
+tank4.r4
+tank4.r5
+tank4.r6
+tank4.r7
+tank4.r8
+tank4.r9
+tank4.r10
+tank4.r11
+tank4.r12
+tank4.r13
+tank4.inputSs
+tank4.inputXs
+tank4.inputXbh
+tank4.inputXba
+tank4.inputXp
+tank4.inputSo
+tank4.inputSno
+tank4.inputSnh
+tank4.inputSnd
+tank4.inputXnd
+tank4.inputSalk
+tank4.aeration
+tank4.MeasurePort.Q
+tank4.V
+tank4.KLa
+tank4.de
+tank4.R_air
+tank4.So_sat
+tank4.AirIn.Q_air
+tank3.Y_h
+tank3.Y_a
+tank3.f_p
+tank3.i_xb
+tank3.i_xp
+tank3.mu_h_T
+tank3.b_h_T
+tank3.mu_a_T
+tank3.b_a_T
+tank3.k_a_T
+tank3.k_h_T
+tank3.K_x_T
+tank3.K_nh
+tank3.K_s
+tank3.K_oh
+tank3.K_no
+tank3.K_oa
+tank3.ny_g
+tank3.ny_h
+tank3.Si
+tank3.der(Si)
+tank3.Ss
+tank3.der(Ss)
+tank3.Xi
+tank3.der(Xi)
+tank3.Xs
+tank3.der(Xs)
+tank3.Xbh
+tank3.der(Xbh)
+tank3.Xba
+tank3.der(Xba)
+tank3.Xp
+tank3.der(Xp)
+tank3.So
+tank3.der(So)
+tank3.Sno
+tank3.der(Sno)
+tank3.Snh
+tank3.der(Snh)
+tank3.Snd
+tank3.der(Snd)
+tank3.Xnd
+tank3.der(Xnd)
+tank3.Salk
+tank3.der(Salk)
+tank3.p1
+tank3.p2
+tank3.p3
+tank3.p4
+tank3.p5
+tank3.p6
+tank3.p7
+tank3.p8
+tank3.r1
+tank3.r2
+tank3.r3
+tank3.r4
+tank3.r5
+tank3.r6
+tank3.r7
+tank3.r8
+tank3.r9
+tank3.r10
+tank3.r11
+tank3.r12
+tank3.r13
+tank3.inputSs
+tank3.inputXs
+tank3.inputXbh
+tank3.inputXba
+tank3.inputXp
+tank3.inputSo
+tank3.inputSno
+tank3.inputSnh
+tank3.inputSnd
+tank3.inputXnd
+tank3.inputSalk
+tank3.aeration
+tank3.MeasurePort.Q
+tank3.V
+tank3.KLa
+tank3.de
+tank3.R_air
+tank3.So_sat
+tank3.AirIn.Q_air
+tank2.Y_h
+tank2.Y_a
+tank2.f_p
+tank2.i_xb
+tank2.i_xp
+tank2.mu_h_T
+tank2.b_h_T
+tank2.mu_a_T
+tank2.b_a_T
+tank2.k_a_T
+tank2.k_h_T
+tank2.K_x_T
+tank2.K_nh
+tank2.K_s
+tank2.K_oh
+tank2.K_no
+tank2.K_oa
+tank2.ny_g
+tank2.ny_h
+tank2.Si
+tank2.der(Si)
+tank2.Ss
+tank2.der(Ss)
+tank2.Xi
+tank2.der(Xi)
+tank2.Xs
+tank2.der(Xs)
+tank2.Xbh
+tank2.der(Xbh)
+tank2.Xba
+tank2.der(Xba)
+tank2.Xp
+tank2.der(Xp)
+tank2.So
+tank2.der(So)
+tank2.Sno
+tank2.der(Sno)
+tank2.Snh
+tank2.der(Snh)
+tank2.Snd
+tank2.der(Snd)
+tank2.Xnd
+tank2.der(Xnd)
+tank2.Salk
+tank2.der(Salk)
+tank2.p1
+tank2.p2
+tank2.p3
+tank2.p4
+tank2.p5
+tank2.p6
+tank2.p7
+tank2.p8
+tank2.r1
+tank2.r2
+tank2.r3
+tank2.r4
+tank2.r5
+tank2.r6
+tank2.r7
+tank2.r8
+tank2.r9
+tank2.r10
+tank2.r11
+tank2.r12
+tank2.r13
+tank2.inputSs
+tank2.inputXs
+tank2.inputXbh
+tank2.inputXba
+tank2.inputXp
+tank2.inputSo
+tank2.inputSno
+tank2.inputSnh
+tank2.inputSnd
+tank2.inputXnd
+tank2.inputSalk
+tank2.aeration
+tank2.MeasurePort.Q
+tank2.V
+tank1.Y_h
+tank1.Y_a
+tank1.f_p
+tank1.i_xb
+tank1.i_xp
+tank1.mu_h_T
+tank1.b_h_T
+tank1.mu_a_T
+tank1.b_a_T
+tank1.k_a_T
+tank1.k_h_T
+tank1.K_x_T
+tank1.K_nh
+tank1.K_s
+tank1.K_oh
+tank1.K_no
+tank1.K_oa
+tank1.ny_g
+tank1.ny_h
+tank1.Si
+tank1.der(Si)
+tank1.Ss
+tank1.der(Ss)
+tank1.Xi
+tank1.der(Xi)
+tank1.Xs
+tank1.der(Xs)
+tank1.Xbh
+tank1.der(Xbh)
+tank1.Xba
+tank1.der(Xba)
+tank1.Xp
+tank1.der(Xp)
+tank1.So
+tank1.der(So)
+tank1.Sno
+tank1.der(Sno)
+tank1.Snh
+tank1.der(Snh)
+tank1.Snd
+tank1.der(Snd)
+tank1.Xnd
+tank1.der(Xnd)
+tank1.Salk
+tank1.der(Salk)
+tank1.p1
+tank1.p2
+tank1.p3
+tank1.p4
+tank1.p5
+tank1.p6
+tank1.p7
+tank1.p8
+tank1.r1
+tank1.r2
+tank1.r3
+tank1.r4
+tank1.r5
+tank1.r6
+tank1.r7
+tank1.r8
+tank1.r9
+tank1.r10
+tank1.r11
+tank1.r12
+tank1.r13
+tank1.inputSs
+tank1.inputXs
+tank1.inputXbh
+tank1.inputXba
+tank1.inputXp
+tank1.inputSo
+tank1.inputSno
+tank1.inputSnh
+tank1.inputSnd
+tank1.inputXnd
+tank1.inputSalk
+tank1.aeration
+tank1.In.Si
+tank1.In.Ss
+tank1.In.Xi
+tank1.In.Xs
+tank1.In.Xbh
+tank1.In.Xba
+tank1.In.Xp
+tank1.In.So
+tank1.In.Sno
+tank1.In.Snh
+tank1.In.Snd
+tank1.In.Xnd
+tank1.In.Salk
+tank1.MeasurePort.Q
+tank1.V
+mixer.In1.Q
+mixer.In1.Si
+mixer.In1.Ss
+mixer.In1.Xi
+mixer.In1.Xs
+mixer.In1.Xbh
+mixer.In1.Xba
+mixer.In1.Xp
+mixer.In1.So
+mixer.In1.Sno
+mixer.In1.Snh
+mixer.In1.Snd
+mixer.In1.Xnd
+mixer.In1.Salk
+sensor_NO.In.Q
+sensor_O2.In.Q
+Constant1.k
+RecyclePump.Q_min
+RecyclePump.Q_max
+RecyclePump.H
+ReturnPump.Q_min
+ReturnPump.Q_max
+ReturnPump.H
+WastePump.Q_min
+WastePump.Q_max
+WastePump.H
+Constant2.k
+sensor_NH1.In.Q
+sensor_NO1.In.Q
+sensor_TKN1.Y_h
+sensor_TKN1.Y_a
+sensor_TKN1.f_p
+sensor_TKN1.i_xb
+sensor_TKN1.i_xp
+sensor_TKN1.In.Q
+sensor_TKN1.TKN[1]
+sensor_TKN1.TKN[2]
+sensor_COD1.In.Q
+sensor_COD1.COD
+sensor_TSS1.In.Q
+sensor_TSS1.TSS
+CombiTableTime.nout
+CombiTableTime.tableOnFile
+CombiTableTime.table[1, 1]
+CombiTableTime.table[1, 2]
+CombiTableTime.table[2, 1]
+CombiTableTime.table[2, 2]
+CombiTableTime.verboseRead
+CombiTableTime.columns[1]
+CombiTableTime.columns[2]
+CombiTableTime.columns[3]
+CombiTableTime.columns[4]
+CombiTableTime.columns[5]
+CombiTableTime.columns[6]
+CombiTableTime.columns[7]
+CombiTableTime.columns[8]
+CombiTableTime.columns[9]
+CombiTableTime.columns[10]
+CombiTableTime.columns[11]
+CombiTableTime.columns[12]
+CombiTableTime.columns[13]
+CombiTableTime.columns[14]
+CombiTableTime.smoothness
+CombiTableTime.extrapolation
+CombiTableTime.offset[1]
+CombiTableTime.startTime
+CombiTableTime.t_min
+CombiTableTime.t_max
+CombiTableTime.p_offset[1]
+CombiTableTime.p_offset[2]
+CombiTableTime.p_offset[3]
+CombiTableTime.p_offset[4]
+CombiTableTime.p_offset[5]
+CombiTableTime.p_offset[6]
+CombiTableTime.p_offset[7]
+CombiTableTime.p_offset[8]
+CombiTableTime.p_offset[9]
+CombiTableTime.p_offset[10]
+CombiTableTime.p_offset[11]
+CombiTableTime.p_offset[12]
+CombiTableTime.p_offset[13]
+CombiTableTime.p_offset[14]
+CombiTableTime.tableID.id
+CombiTableTime.nextTimeEvent
+CombiTableTime.tableOnFileRead
+Constant3.k
+
+double initialValue(754,6)
+ -2   18061                  0       0                  6   388   # Effluent.In.Q
+ -2 4.3952674865722656E+000  0 1.0000000000000000E+100  6   260   # Effluent.In.Xi
+ -2 6.8749681115150452E-002  0 1.0000000000000000E+100  6   260   # Effluent.In.Xs
+ -2 1.0141247749328613E+001  0 1.0000000000000000E+100  6   260   # Effluent.In.Xbh
+ -2 3.6936616897583008E-001  0 1.0000000000000000E+100  6   260   # Effluent.In.Xba
+ -2 1.6763257980346680E+000  0 1.0000000000000000E+100  6   260   # Effluent.In.Xp
+ -2 5.0482302904129028E-003  0 1.0000000000000000E+100  6   260   # Effluent.In.Xnd
+ -2     385                  0       0                  6   388   # WasteSludge.In.Q
+ -2 2.2468894042968750E+003  0 1.0000000000000000E+100  6   260   # WasteSludge.In.Xi
+ -2 3.5145290374755859E+001  0 1.0000000000000000E+100  6   260   # WasteSludge.In.Xs
+ -2 5.1842724609375000E+003  0 1.0000000000000000E+100  6   260   # WasteSludge.In.Xbh
+ -2 1.8882241821289062E+002  0 1.0000000000000000E+100  6   260   # WasteSludge.In.Xba
+ -2 8.5694873046875000E+002  0 1.0000000000000000E+100  6   260   # WasteSludge.In.Xp
+ -2 2.5806884765625000E+000  0 1.0000000000000000E+100  6   260   # WasteSludge.In.Xnd
+ -2 3.5195314884185791E-001  0       0                  6   256   # Settler.rXi
+ -2 5.5051636882126331E-003  0       0                  6   256   # Settler.rXs
+ -2 8.1206524372100830E-001  0       0                  6   256   # Settler.rXbh
+ -2 2.9577173292636871E-002  0       0                  6   256   # Settler.rXba
+ -2 1.3423259556293488E-001  0       0                  6   256   # Settler.rXp
+ -2 4.0423948667012155E-004  0       0                  6   256   # Settler.rXnd
+ -2       4                  0       0                  1   280   # Settler.hsc
+ -2      10                  0       0                  1   282   # Settler.n
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.zm
+ -2    1500                  0       0                  1   280   # Settler.Asc
+ -2    3000                  0 1.0000000000000000E+100  1   280   # Settler.Xt
+ -2 3.2647663574218750E+003  0 1.0000000000000000E+100  6   256   # Settler.Xf
+ -2   36892                  0       0                  6   388   # Settler.Feed.Q
+ -2  -18446                  0       0                  6   388   # Settler.Return.Q
+ -2 2.2468894042968750E+003  0 1.0000000000000000E+100  6   260   # Settler.Return.Xi
+ -2 3.5145290374755859E+001  0 1.0000000000000000E+100  6   260   # Settler.Return.Xs
+ -2 5.1842724609375000E+003  0 1.0000000000000000E+100  6   260   # Settler.Return.Xbh
+ -2 1.8882241821289062E+002  0 1.0000000000000000E+100  6   260   # Settler.Return.Xba
+ -2 8.5694873046875000E+002  0 1.0000000000000000E+100  6   260   # Settler.Return.Xp
+ -2 2.5806884765625000E+000  0 1.0000000000000000E+100  6   260   # Settler.Return.Xnd
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S1.zm
+ -2    1500                  0       0                  6   256   # Settler.S1.Asc
+ -2 6.3840585937500000E+003  0 1.0000000000000000E+100  2   280   # Settler.S1.X
+ -2 -2.9572233324870467E-004  0       0                  3   256   # Settler.S1.der(X)
+ -2 1.2040507316589355E+001  0       0                  6   256   # Settler.S1.vS
+ -2       0                  0       0                  6   256   # Settler.S1.Jsm
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S1.Si
+ -2       0                  0       0                  3   256   # Settler.S1.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S1.Ss
+ -2 9.8324306918584625E-008  0       0                  3   256   # Settler.S1.der(Ss)
+ -2 6.1835145950317383E-001  0 1.0000000000000000E+100  2   280   # Settler.S1.So
+ -2 7.5716741321230074E-007  0       0                  3   256   # Settler.S1.der(So)
+ -2 8.9885368347167969E+000  0 1.0000000000000000E+100  2   280   # Settler.S1.Sno
+ -2 -1.1453463230282068E-005  0       0                  3   256   # Settler.S1.der(Sno)
+ -2 8.8272161483764648E+000  0 1.0000000000000000E+100  2   280   # Settler.S1.Snh
+ -2 1.7848758943728171E-005  0       0                  3   256   # Settler.S1.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S1.Snd
+ -2 3.9214725688907492E-008  0       0                  3   256   # Settler.S1.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S1.Salk
+ -2 2.0930158370902063E-006  0       0                  3   256   # Settler.S1.der(Salk)
+ -2 7.5680187500000000E+004  0       0                  6   388   # Settler.S1.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S2.zm
+ -2    1500                  0       0                  6   256   # Settler.S2.Asc
+ -2 3.5568658447265625E+002  0 1.0000000000000000E+100  2   280   # Settler.S2.X
+ -2 6.8521330831572413E-007  0       0                  3   256   # Settler.S2.der(X)
+ -2 2.1277210998535156E+002  0       0                  6   256   # Settler.S2.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S2.Si
+ -2       0                  0       0                  3   256   # Settler.S2.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S2.Ss
+ -2 9.8009948601429642E-008  0       0                  3   256   # Settler.S2.der(Ss)
+ -2 6.1835151910781860E-001  0 1.0000000000000000E+100  2   280   # Settler.S2.So
+ -2 7.5494187967706239E-007  0       0                  3   256   # Settler.S2.der(So)
+ -2 8.9885368347167969E+000  0 1.0000000000000000E+100  2   280   # Settler.S2.Sno
+ -2 -1.1420602277212311E-005  0       0                  3   256   # Settler.S2.der(Sno)
+ -2 8.8272161483764648E+000  0 1.0000000000000000E+100  2   280   # Settler.S2.Snh
+ -2 1.7797694454202428E-005  0       0                  3   256   # Settler.S2.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S2.Snd
+ -2 3.9091755610343171E-008  0       0                  3   256   # Settler.S2.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S2.Salk
+ -2 2.0870211301371455E-006  0       0                  3   256   # Settler.S2.der(Salk)
+ -2 7.5680187500000000E+004  0       0                  6   388   # Settler.S2.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S3.zm
+ -2    1500                  0       0                  6   256   # Settler.S3.Asc
+ -2 3.5568658447265625E+002  0 1.0000000000000000E+100  2   280   # Settler.S3.X
+ -2 -1.2237942428328097E-005  0       0                  3   256   # Settler.S3.der(X)
+ -2 2.1277210998535156E+002  0       0                  6   256   # Settler.S3.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S3.Si
+ -2       0                  0       0                  3   256   # Settler.S3.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S3.Ss
+ -2 9.7709751400998357E-008  0       0                  3   256   # Settler.S3.der(Ss)
+ -2 6.1835151910781860E-001  0 1.0000000000000000E+100  2   280   # Settler.S3.So
+ -2 7.5274761002219748E-007  0       0                  3   256   # Settler.S3.der(So)
+ -2 8.9885358810424805E+000  0 1.0000000000000000E+100  2   280   # Settler.S3.Sno
+ -2 -1.1387831364118028E-005  0       0                  3   256   # Settler.S3.der(Sno)
+ -2 8.8272171020507813E+000  0 1.0000000000000000E+100  2   280   # Settler.S3.Snh
+ -2 1.7746770026860759E-005  0       0                  3   256   # Settler.S3.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S3.Snd
+ -2 3.8973478666548544E-008  0       0                  3   256   # Settler.S3.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S3.Salk
+ -2 2.0810430214623921E-006  0       0                  3   256   # Settler.S3.der(Salk)
+ -2 7.5680187500000000E+004  0       0                  6   388   # Settler.S3.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S4.zm
+ -2    1500                  0       0                  6   256   # Settler.S4.Asc
+ -2 3.5568658447265625E+002  0 1.0000000000000000E+100  2   280   # Settler.S4.X
+ -2 -2.4135442799888551E-005  0       0                  3   256   # Settler.S4.der(X)
+ -2 2.1277210998535156E+002  0       0                  6   256   # Settler.S4.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S4.Si
+ -2       0                  0       0                  3   256   # Settler.S4.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S4.Ss
+ -2 9.7422891087717289E-008  0       0                  3   256   # Settler.S4.der(Ss)
+ -2 6.1835151910781860E-001  0 1.0000000000000000E+100  2   280   # Settler.S4.So
+ -2 7.5058068205180462E-007  0       0                  3   256   # Settler.S4.der(So)
+ -2 8.9885358810424805E+000  0 1.0000000000000000E+100  2   280   # Settler.S4.Sno
+ -2 -1.1355157766956836E-005  0       0                  3   256   # Settler.S4.der(Sno)
+ -2 8.8272171020507813E+000  0 1.0000000000000000E+100  2   280   # Settler.S4.Snh
+ -2 1.7695998394628987E-005  0       0                  3   256   # Settler.S4.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S4.Snd
+ -2 3.8859585771433558E-008  0       0                  3   256   # Settler.S4.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S4.Salk
+ -2 2.0750826479343232E-006  0       0                  3   256   # Settler.S4.der(Salk)
+ -2 7.5680187500000000E+004  0       0                  6   388   # Settler.S4.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S5.zm
+ -2    1500                  0       0                  6   256   # Settler.S5.Asc
+ -2 3.5568658447265625E+002  0 1.0000000000000000E+100  2   280   # Settler.S5.X
+ -2 1.2292366591282189E-006  0       0                  3   256   # Settler.S5.der(X)
+ -2 2.1277210998535156E+002  0       0                  6   256   # Settler.S5.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S5.Si
+ -2       0                  0       0                  3   256   # Settler.S5.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S5.Ss
+ -2 9.7145033350898302E-008  0       0                  3   256   # Settler.S5.der(Ss)
+ -2 6.1835157871246338E-001  0 1.0000000000000000E+100  2   280   # Settler.S5.So
+ -2 7.4843165975835291E-007  0       0                  3   256   # Settler.S5.der(So)
+ -2 8.9885358810424805E+000  0 1.0000000000000000E+100  2   280   # Settler.S5.Sno
+ -2 -1.1322585123707540E-005  0       0                  3   256   # Settler.S5.der(Sno)
+ -2 8.8272180557250977E+000  0 1.0000000000000000E+100  2   280   # Settler.S5.Snh
+ -2 1.7645383195485920E-005  0       0                  3   256   # Settler.S5.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S5.Snd
+ -2 3.8748630970530940E-008  0       0                  3   256   # Settler.S5.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S5.Salk
+ -2 2.0691406916739652E-006  0       0                  3   256   # Settler.S5.der(Salk)
+ -2 7.5680187500000000E+004  0       0                  6   388   # Settler.S5.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S6.zm
+ -2    1500                  0       0                  6   256   # Settler.S6.Asc
+ -2 3.5568658447265625E+002  0 1.0000000000000000E+100  2   280   # Settler.S6.X
+ -2 -2.3268949007615447E-005  0       0                  3   256   # Settler.S6.der(X)
+ -2 2.1277210998535156E+002  0       0                  6   256   # Settler.S6.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S6.Si
+ -2       0                  0       0                  3   256   # Settler.S6.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S6.Ss
+ -2 9.6871268340237293E-008  0       0                  3   256   # Settler.S6.der(Ss)
+ -2 6.1835157871246338E-001  0 1.0000000000000000E+100  2   280   # Settler.S6.So
+ -2 7.4629178925533779E-007  0       0                  3   256   # Settler.S6.der(So)
+ -2 8.9885349273681641E+000  0 1.0000000000000000E+100  2   280   # Settler.S6.Sno
+ -2 -1.1290110705886036E-005  0       0                  3   256   # Settler.S6.der(Sno)
+ -2 8.8272190093994141E+000  0 1.0000000000000000E+100  2   280   # Settler.S6.Snh
+ -2 1.7594920791452751E-005  0       0                  3   256   # Settler.S6.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S6.Snd
+ -2 3.8638980015548441E-008  0       0                  3   256   # Settler.S6.der(Snd)
+ -2 4.7341918945312500E+000  0 1.0000000000000000E+100  2   280   # Settler.S6.Salk
+ -2 2.0632164705602918E-006  0       0                  3   256   # Settler.S6.der(Salk)
+ -2 4.1323369140625000E+003  0       0                  6   388   # Settler.S6.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S7.zm
+ -2    1500                  0       0                  6   256   # Settler.S7.Asc
+ -2 6.8934249877929688E+001  0 1.0000000000000000E+100  2   280   # Settler.S7.X
+ -2 -1.2329428500379436E-006  0       0                  3   256   # Settler.S7.der(X)
+ -2 5.9946067810058594E+001  0       0                  6   256   # Settler.S7.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S7.Si
+ -2       0                  0       0                  3   256   # Settler.S7.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S7.Ss
+ -2 9.7156899414585496E-008  0       0                  3   256   # Settler.S7.der(Ss)
+ -2 6.1835157871246338E-001  0 1.0000000000000000E+100  2   280   # Settler.S7.So
+ -2 7.4852329134955653E-007  0       0                  3   256   # Settler.S7.der(So)
+ -2 8.9885358810424805E+000  0 1.0000000000000000E+100  2   280   # Settler.S7.Sno
+ -2 -1.1323973922117148E-005  0       0                  3   256   # Settler.S7.der(Sno)
+ -2 8.8272180557250977E+000  0 1.0000000000000000E+100  2   280   # Settler.S7.Snh
+ -2 1.7647542335907929E-005  0       0                  3   256   # Settler.S7.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S7.Snd
+ -2 3.8753366737864781E-008  0       0                  3   256   # Settler.S7.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S7.Salk
+ -2 2.0693939859484090E-006  0       0                  3   256   # Settler.S7.der(Salk)
+ -2    3000                  0 1.0000000000000000E+100  6   256   # Settler.S7.Xt
+ -2 6.7964782714843750E+002  0       0                  6   388   # Settler.S7.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S8.zm
+ -2    1500                  0       0                  6   256   # Settler.S8.Asc
+ -2 2.9525701522827148E+001  0 1.0000000000000000E+100  2   280   # Settler.S8.X
+ -2 -4.1770931602513883E-007  0       0                  3   256   # Settler.S8.der(X)
+ -2 2.3018856048583984E+001  0       0                  6   256   # Settler.S8.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S8.Si
+ -2       0                  0       0                  3   256   # Settler.S8.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S8.Ss
+ -2 9.7447433233810443E-008  0       0                  3   256   # Settler.S8.der(Ss)
+ -2 6.1835151910781860E-001  0 1.0000000000000000E+100  2   280   # Settler.S8.So
+ -2 7.5076559369335882E-007  0       0                  3   256   # Settler.S8.der(So)
+ -2 8.9885358810424805E+000  0 1.0000000000000000E+100  2   280   # Settler.S8.Sno
+ -2 -1.1357944458723068E-005  0       0                  3   256   # Settler.S8.der(Sno)
+ -2 8.8272171020507813E+000  0 1.0000000000000000E+100  2   280   # Settler.S8.Snh
+ -2 1.7700327589409426E-005  0       0                  3   256   # Settler.S8.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S8.Snd
+ -2 3.8869320206913471E-008  0       0                  3   256   # Settler.S8.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S8.Salk
+ -2 2.0755908280989388E-006  0       0                  3   256   # Settler.S8.der(Salk)
+ -2    3000                  0 1.0000000000000000E+100  6   256   # Settler.S8.Xt
+ -2 2.0514265441894531E+002  0       0                  6   388   # Settler.S8.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S9.zm
+ -2    1500                  0       0                  6   256   # Settler.S9.Asc
+ -2 1.8103677749633789E+001  0 1.0000000000000000E+100  2   280   # Settler.S9.X
+ -2 -2.7939086066908203E-007  0       0                  3   256   # Settler.S9.der(X)
+ -2 1.1331545829772949E+001  0       0                  6   256   # Settler.S9.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S9.Si
+ -2       0                  0       0                  3   256   # Settler.S9.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S9.Ss
+ -2 9.7748291238985985E-008  0       0                  3   256   # Settler.S9.der(Ss)
+ -2 6.1835151910781860E-001  0 1.0000000000000000E+100  2   280   # Settler.S9.So
+ -2 7.5302858704162645E-007  0       0                  3   256   # Settler.S9.der(So)
+ -2 8.9885358810424805E+000  0 1.0000000000000000E+100  2   280   # Settler.S9.Sno
+ -2 -1.1392024134693202E-005  0       0                  3   256   # Settler.S9.der(Sno)
+ -2 8.8272171020507813E+000  0 1.0000000000000000E+100  2   280   # Settler.S9.Snh
+ -2 1.7753283827914856E-005  0       0                  3   256   # Settler.S9.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S9.Snd
+ -2 3.8988655859384380E-008  0       0                  3   256   # Settler.S9.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S9.Salk
+ -2 2.0818076791329077E-006  0       0                  3   256   # Settler.S9.der(Salk)
+ -2    3000                  0 1.0000000000000000E+100  6   256   # Settler.S9.Xt
+ -2 6.7613883972167969E+001  0       0                  6   388   # Settler.S9.Up.SedFlux
+ -2 4.0000000596046448E-001  0       0                  6   256   # Settler.S10.zm
+ -2    1500                  0       0                  6   256   # Settler.S10.Asc
+ -2 1.2488217353820801E+001  0 1.0000000000000000E+100  2   280   # Settler.S10.X
+ -2 -2.5828754246504104E-007  0       0                  3   256   # Settler.S10.der(X)
+ -2 5.4142146110534668E+000  0       0                  6   256   # Settler.S10.vS
+ -2      30                  0 1.0000000000000000E+100  2   280   # Settler.S10.Si
+ -2       0                  0       0                  3   256   # Settler.S10.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # Settler.S10.Ss
+ -2 9.8063743791954039E-008  0       0                  3   256   # Settler.S10.der(Ss)
+ -2 6.1835151910781860E-001  0 1.0000000000000000E+100  2   280   # Settler.S10.So
+ -2 7.5532187793214689E-007  0       0                  3   256   # Settler.S10.der(So)
+ -2 8.9885368347167969E+000  0 1.0000000000000000E+100  2   280   # Settler.S10.Sno
+ -2 -1.1426207493059337E-005  0       0                  3   256   # Settler.S10.der(Sno)
+ -2 8.8272161483764648E+000  0 1.0000000000000000E+100  2   280   # Settler.S10.Snh
+ -2 1.7806403775466606E-005  0       0                  3   256   # Settler.S10.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # Settler.S10.Snd
+ -2 3.9112787675321670E-008  0       0                  3   256   # Settler.S10.der(Snd)
+ -2 4.7341914176940918E+000  0 1.0000000000000000E+100  2   280   # Settler.S10.Salk
+ -2 2.0880436295556137E-006  0       0                  3   256   # Settler.S10.der(Salk)
+ -2    3000                  0 1.0000000000000000E+100  6   256   # Settler.S10.Xt
+ -2   92230                  0       0                  6   388   # divider.In.Q
+ -2  -55338                  0       0                  6   388   # divider.Out2.Q
+ -2 6.7000001668930054E-001  0       0                  1   280   # tank5.Y_h
+ -2 2.3999999463558197E-001  0       0                  1   280   # tank5.Y_a
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank5.f_p
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank5.i_xb
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank5.i_xp
+ -2       4                  0       0                  1   280   # tank5.mu_h_T
+ -2 2.8000000119209290E-001  0       0                  1   280   # tank5.b_h_T
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank5.mu_a_T
+ -2 1.0000000149011612E-001  0       0                  1   280   # tank5.b_a_T
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank5.k_a_T
+ -2 1.7500000000000000E+000  0       0                  1   280   # tank5.k_h_T
+ -2 1.7500000074505806E-002  0       0                  1   280   # tank5.K_x_T
+ -2       1                  0       0                  1   280   # tank5.K_nh
+ -2      20                  0       0                  1   280   # tank5.K_s
+ -2 2.0000000298023224E-001  0       0                  1   280   # tank5.K_oh
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank5.K_no
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank5.K_oa
+ -2 8.0000001192092896E-001  0       0                  1   280   # tank5.ny_g
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank5.ny_h
+ -2      30                  0 1.0000000000000000E+100  2   280   # tank5.Si
+ -2       0                  0       0                  3   256   # tank5.der(Si)
+ -2 1.6536810398101807E+000  0 1.0000000000000000E+100  2   280   # tank5.Ss
+ -2 9.6732918564157444E-008  0       0                  3   256   # tank5.der(Ss)
+ -2 1.1490447998046875E+003  0 1.0000000000000000E+100  2   280   # tank5.Xi
+ -2 -1.6938798580667935E-005  0       0                  3   256   # tank5.der(Xi)
+ -2 1.7973073959350586E+001  0 1.0000000000000000E+100  2   280   # tank5.Xs
+ -2 -1.6946103187365225E-006  0       0                  3   256   # tank5.der(Xs)
+ -2 2.6512033691406250E+003  0 1.0000000000000000E+100  2   280   # tank5.Xbh
+ -2 -5.3645639127353206E-005  0       0                  3   256   # tank5.der(Xbh)
+ -2 9.6562561035156250E+001  0 1.0000000000000000E+100  2   280   # tank5.Xba
+ -2 -8.4805440565105528E-005  0       0                  3   256   # tank5.der(Xba)
+ -2 4.3823803710937500E+002  0 1.0000000000000000E+100  2   280   # tank5.Xp
+ -2 -4.3651689338730648E-005  0       0                  3   256   # tank5.der(Xp)
+ -2 6.1835157871246338E-001  0 1.0000000000000000E+100  2   280   # tank5.So
+ -2 7.4520323778415332E-007  0       0                  3   256   # tank5.der(So)
+ -2 8.9885349273681641E+000  0 1.0000000000000000E+100  2   280   # tank5.Sno
+ -2 -1.1273583368165419E-005  0       0                  3   256   # tank5.der(Sno)
+ -2 8.8272190093994141E+000  0 1.0000000000000000E+100  2   280   # tank5.Snh
+ -2 1.7569234842085280E-005  0       0                  3   256   # tank5.der(Snh)
+ -2 5.6068986654281616E-001  0 1.0000000000000000E+100  2   280   # tank5.Snd
+ -2 3.8583323203056352E-008  0       0                  3   256   # tank5.der(Snd)
+ -2 1.3197474479675293E+000  0 1.0000000000000000E+100  2   280   # tank5.Xnd
+ -2 -1.3256747877221642E-007  0       0                  3   256   # tank5.der(Xnd)
+ -2 4.7341918945312500E+000  0 1.0000000000000000E+100  2   280   # tank5.Salk
+ -2 2.0602012682502391E-006  0       0                  3   256   # tank5.der(Salk)
+ -2 6.1195373535156250E+002  0       0                  6   256   # tank5.p1
+ -2 1.5000054931640625E+002  0       0                  6   256   # tank5.p2
+ -2 2.6333572387695312E+001  0       0                  6   256   # tank5.p3
+ -2 7.4233691406250000E+002  0       0                  6   256   # tank5.p4
+ -2 9.6562557220458984E+000  0       0                  6   256   # tank5.p5
+ -2 8.9190170288085938E+001  0       0                  6   256   # tank5.p6
+ -2 1.0988297119140625E+003  0       0                  6   256   # tank5.p7
+ -2 8.0686126708984375E+001  0       0                  6   256   # tank5.p8
+ -2       0                  0       0                  6   256   # tank5.r1
+ -2 -3.8415466308593750E+001  0       0                  6   256   # tank5.r2
+ -2       0                  0       0                  6   256   # tank5.r3
+ -2 -4.0699600219726562E+002  0       0                  6   256   # tank5.r4
+ -2 1.9617351531982422E+001  0       0                  6   256   # tank5.r5
+ -2 1.6677316665649414E+001  0       0                  6   256   # tank5.r6
+ -2 6.0159454345703125E+001  0       0                  6   256   # tank5.r7
+ -2 -7.7651159667968750E+002  0       0                  6   256   # tank5.r8
+ -2 8.3890747070312500E+001  0       0                  6   256   # tank5.r9
+ -2 -8.3596076965332031E+001  0       0                  6   256   # tank5.r10
+ -2 -8.5040416717529297E+000  0       0                  6   256   # tank5.r11
+ -2 -2.4136241912841797E+001  0       0                  6   256   # tank5.r12
+ -2 -1.1963344573974609E+001  0       0                  6   256   # tank5.r13
+ -2 3.8415466308593750E+001  0       0                  6   256   # tank5.inputSs
+ -2 4.0699600219726562E+002  0       0                  6   256   # tank5.inputXs
+ -2 -1.9617404937744141E+001  0       0                  6   256   # tank5.inputXbh
+ -2 -1.6677400588989258E+001  0       0                  6   256   # tank5.inputXba
+ -2 -6.0159500122070312E+001  0       0                  6   256   # tank5.inputXp
+ -2 1.5645312500000000E+002  0       0                  6   256   # tank5.inputSo
+ -2 -8.3890762329101563E+001  0       0                  6   256   # tank5.inputSno
+ -2 8.3596092224121094E+001  0       0                  6   256   # tank5.inputSnh
+ -2 8.5040416717529297E+000  0       0                  6   256   # tank5.inputSnd
+ -2 2.4136241912841797E+001  0       0                  6   256   # tank5.inputXnd
+ -2 1.1963346481323242E+001  0       0                  6   256   # tank5.inputSalk
+ -2 6.2005847167968750E+002  0       0                  6   256   # tank5.aeration
+ -2       0                  0       0                  6   388   # tank5.MeasurePort.Q
+ -2    1333                  0       0                  1   280   # tank5.V
+ -2      84                  0       0                  1   280   # tank5.KLa
+ -2 4.5000000000000000E+000  0       0                  1   280   # tank5.de
+ -2 2.3500000000000000E+001  0       0                  1   280   # tank5.R_air
+ -2       8                  0 1.0000000000000000E+100  1   280   # tank5.So_sat
+ -2       0                  0       0                  6   388   # tank5.AirIn.Q_air
+ -2 6.7000001668930054E-001  0       0                  1   280   # tank4.Y_h
+ -2 2.3999999463558197E-001  0       0                  1   280   # tank4.Y_a
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank4.f_p
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank4.i_xb
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank4.i_xp
+ -2       4                  0       0                  1   280   # tank4.mu_h_T
+ -2 2.8000000119209290E-001  0       0                  1   280   # tank4.b_h_T
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank4.mu_a_T
+ -2 1.0000000149011612E-001  0       0                  1   280   # tank4.b_a_T
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank4.k_a_T
+ -2 1.7500000000000000E+000  0       0                  1   280   # tank4.k_h_T
+ -2 1.7500000074505806E-002  0       0                  1   280   # tank4.K_x_T
+ -2       1                  0       0                  1   280   # tank4.K_nh
+ -2      20                  0       0                  1   280   # tank4.K_s
+ -2 2.0000000298023224E-001  0       0                  1   280   # tank4.K_oh
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank4.K_no
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank4.K_oa
+ -2 8.0000001192092896E-001  0       0                  1   280   # tank4.ny_g
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank4.ny_h
+ -2      30                  0 1.0000000000000000E+100  2   280   # tank4.Si
+ -2       0                  0       0                  3   256   # tank4.der(Si)
+ -2 2.2088997364044189E+000  0 1.0000000000000000E+100  2   280   # tank4.Ss
+ -2 7.5391582754491537E-008  0       0                  3   256   # tank4.der(Ss)
+ -2 1.1490447998046875E+003  0 1.0000000000000000E+100  2   280   # tank4.Xi
+ -2 -1.6928070181165822E-005  0       0                  3   256   # tank4.der(Xi)
+ -2 2.3855384826660156E+001  0 1.0000000000000000E+100  2   280   # tank4.Xs
+ -2 -7.5620960160449613E-008  0       0                  3   256   # tank4.der(Xs)
+ -2 2.6509199218750000E+003  0 1.0000000000000000E+100  2   280   # tank4.Xbh
+ -2 -5.4661388276144862E-005  0       0                  3   256   # tank4.der(Xbh)
+ -2 9.6321525573730469E+001  0 1.0000000000000000E+100  2   280   # tank4.Xba
+ -2 -8.4740953752771020E-005  0       0                  3   256   # tank4.der(Xba)
+ -2 4.3736856079101562E+002  0 1.0000000000000000E+100  2   280   # tank4.Xp
+ -2 -4.3574073060881346E-005  0       0                  3   256   # tank4.der(Xp)
+ -2 2.8795683383941650E+000  0 1.0000000000000000E+100  2   280   # tank4.So
+ -2 1.6898347894311883E-006  0       0                  3   256   # tank4.der(So)
+ -2 7.7760620117187500E+000  0 1.0000000000000000E+100  2   280   # tank4.Sno
+ -2 -1.1290087059023790E-005  0       0                  3   256   # tank4.der(Sno)
+ -2 1.0035432815551758E+001  0 1.0000000000000000E+100  2   280   # tank4.Snh
+ -2 1.7225556803168729E-005  0       0                  3   256   # tank4.der(Snh)
+ -2 6.8359875679016113E-001  0 1.0000000000000000E+100  2   280   # tank4.Snd
+ -2 1.2567764606785659E-008  0       0                  3   256   # tank4.der(Snd)
+ -2 1.6685883998870850E+000  0 1.0000000000000000E+100  2   280   # tank4.Xnd
+ -2 -1.8266682388912159E-008  0       0                  3   256   # tank4.der(Xnd)
+ -2 4.9070978164672852E+000  0 1.0000000000000000E+100  2   280   # tank4.Salk
+ -2 2.0368318018881837E-006  0       0                  3   256   # tank4.der(Salk)
+ -2 9.8615020751953125E+002  0       0                  6   256   # tank4.p1
+ -2 5.1483924865722656E+001  0       0                  6   256   # tank4.p2
+ -2 3.8454818725585938E+001  0       0                  6   256   # tank4.p3
+ -2 7.4225756835937500E+002  0       0                  6   256   # tank4.p4
+ -2 9.6321525573730469E+000  0       0                  6   256   # tank4.p5
+ -2 1.0872992706298828E+002  0       0                  6   256   # tank4.p6
+ -2 1.5115593261718750E+003  0       0                  6   256   # tank4.p7
+ -2 1.0572750854492187E+002  0       0                  6   256   # tank4.p8
+ -2       0                  0       0                  6   256   # tank4.r1
+ -2 -3.7148323059082031E+001  0       0                  6   256   # tank4.r2
+ -2       0                  0       0                  6   256   # tank4.r3
+ -2 -8.1982086181640625E+002  0       0                  6   256   # tank4.r4
+ -2 2.9537661743164062E+002  0       0                  6   256   # tank4.r5
+ -2 2.8822668075561523E+001  0       0                  6   256   # tank4.r6
+ -2 6.0151176452636719E+001  0       0                  6   256   # tank4.r7
+ -2 -1.1795048828125000E+003  0       0                  6   256   # tank4.r8
+ -2 1.5136207580566406E+002  0       0                  6   256   # tank4.r9
+ -2 -1.3758560180664062E+002  0       0                  6   256   # tank4.r10
+ -2 -3.0024204254150391E+000  0       0                  6   256   # tank4.r11
+ -2 -4.9185405731201172E+001  0       0                  6   256   # tank4.r12
+ -2 -2.0639120101928711E+001  0       0                  6   256   # tank4.r13
+ -2 3.7148323059082031E+001  0       0                  6   256   # tank4.inputSs
+ -2 8.1982086181640625E+002  0       0                  6   256   # tank4.inputXs
+ -2 -2.9537664794921875E+002  0       0                  6   256   # tank4.inputXbh
+ -2 -2.8822751998901367E+001  0       0                  6   256   # tank4.inputXba
+ -2 -6.0151218414306641E+001  0       0                  6   256   # tank4.inputXp
+ -2 -4.9398761749267578E+001  0       0                  6   256   # tank4.inputSo
+ -2 -1.5136207580566406E+002  0       0                  6   256   # tank4.inputSno
+ -2 1.3758561706542969E+002  0       0                  6   256   # tank4.inputSnh
+ -2 3.0024206638336182E+000  0       0                  6   256   # tank4.inputSnd
+ -2 4.9185405731201172E+001  0       0                  6   256   # tank4.inputXnd
+ -2 2.0639122009277344E+001  0       0                  6   256   # tank4.inputSalk
+ -2 1.2289035644531250E+003  0       0                  6   256   # tank4.aeration
+ -2       0                  0       0                  6   388   # tank4.MeasurePort.Q
+ -2    1333                  0       0                  1   280   # tank4.V
+ -2     240                  0       0                  1   280   # tank4.KLa
+ -2 4.5000000000000000E+000  0       0                  1   280   # tank4.de
+ -2 2.3500000000000000E+001  0       0                  1   280   # tank4.R_air
+ -2       8                  0 1.0000000000000000E+100  1   280   # tank4.So_sat
+ -2       0                  0       0                  6   388   # tank4.AirIn.Q_air
+ -2 6.7000001668930054E-001  0       0                  1   280   # tank3.Y_h
+ -2 2.3999999463558197E-001  0       0                  1   280   # tank3.Y_a
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank3.f_p
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank3.i_xb
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank3.i_xp
+ -2       4                  0       0                  1   280   # tank3.mu_h_T
+ -2 2.8000000119209290E-001  0       0                  1   280   # tank3.b_h_T
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank3.mu_a_T
+ -2 1.0000000149011612E-001  0       0                  1   280   # tank3.b_a_T
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank3.k_a_T
+ -2 1.7500000000000000E+000  0       0                  1   280   # tank3.k_h_T
+ -2 1.7500000074505806E-002  0       0                  1   280   # tank3.K_x_T
+ -2       1                  0       0                  1   280   # tank3.K_nh
+ -2      20                  0       0                  1   280   # tank3.K_s
+ -2 2.0000000298023224E-001  0       0                  1   280   # tank3.K_oh
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank3.K_no
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank3.K_oa
+ -2 8.0000001192092896E-001  0       0                  1   280   # tank3.ny_g
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank3.ny_h
+ -2      30                  0 1.0000000000000000E+100  2   280   # tank3.Si
+ -2       0                  0       0                  3   256   # tank3.der(Si)
+ -2 2.7458043098449707E+000  0 1.0000000000000000E+100  2   280   # tank3.Ss
+ -2 1.4665145897652110E-007  0       0                  3   256   # tank3.der(Ss)
+ -2 1.1490447998046875E+003  0 1.0000000000000000E+100  2   280   # tank3.Xi
+ -2 -1.6917088942136616E-005  0       0                  3   256   # tank3.der(Xi)
+ -2 3.5704254150390625E+001  0 1.0000000000000000E+100  2   280   # tank3.Xs
+ -2 4.9964864956564270E-007  0       0                  3   256   # tank3.der(Xs)
+ -2 2.6466506347656250E+003  0 1.0000000000000000E+100  2   280   # tank3.Xbh
+ -2 -5.5040800361894071E-005  0       0                  3   256   # tank3.der(Xbh)
+ -2 9.5904945373535156E+001  0 1.0000000000000000E+100  2   280   # tank3.Xba
+ -2 -8.4390710981097072E-005  0       0                  3   256   # tank3.der(Xba)
+ -2 4.3649917602539062E+002  0 1.0000000000000000E+100  2   280   # tank3.Xp
+ -2 -4.3496103899087757E-005  0       0                  3   256   # tank3.der(Xp)
+ -2 2.1656081676483154E+000  0 1.0000000000000000E+100  2   280   # tank3.So
+ -2 1.3433834737952566E-006  0       0                  3   256   # tank3.der(So)
+ -2 5.5884261131286621E+000  0 1.0000000000000000E+100  2   280   # tank3.Sno
+ -2 -9.8442578746471554E-006  0       0                  3   256   # tank3.der(Sno)
+ -2 1.2023958206176758E+001  0 1.0000000000000000E+100  2   280   # tank3.Snh
+ -2 1.5684003301430494E-005  0       0                  3   256   # tank3.der(Snh)
+ -2 7.2699272632598877E-001  0 1.0000000000000000E+100  2   280   # tank3.Snd
+ -2 2.8083189107519502E-009  0       0                  3   256   # tank3.der(Snd)
+ -2 2.3794651031494141E+000  0 1.0000000000000000E+100  2   280   # tank3.Xnd
+ -2 1.3831751743964560E-008  0       0                  3   256   # tank3.der(Xnd)
+ -2 5.2053952217102051E+000  0 1.0000000000000000E+100  2   280   # tank3.Salk
+ -2 1.8234471781397588E-006  0       0                  3   256   # tank3.der(Salk)
+ -2 1.1699356689453125E+003  0       0                  6   256   # tank3.p1
+ -2 7.9338966369628906E+001  0       0                  6   256   # tank3.p2
+ -2 3.7368446350097656E+001  0       0                  6   256   # tank3.p3
+ -2 7.4106219482421875E+002  0       0                  6   256   # tank3.p4
+ -2 9.5904951095581055E+000  0       0                  6   256   # tank3.p5
+ -2 1.1544575500488281E+002  0       0                  6   256   # tank3.p6
+ -2 1.9083155517578125E+003  0       0                  6   256   # tank3.p7
+ -2 1.2717728424072266E+002  0       0                  6   256   # tank3.p8
+ -2       0                  0       0                  6   256   # tank3.r1
+ -2 4.3726600646972656E+001  0       0                  6   256   # tank3.r2
+ -2       0                  0       0                  6   256   # tank3.r3
+ -2 -1.2177150878906250E+003  0       0                  6   256   # tank3.r4
+ -2 5.0821243286132812E+002  0       0                  6   256   # tank3.r5
+ -2 2.7777950286865234E+001  0       0                  6   256   # tank3.r6
+ -2 6.0052215576171875E+001  0       0                  6   256   # tank3.r7
+ -2 -1.2504260253906250E+003  0       0                  6   256   # tank3.r8
+ -2 1.4203842163085937E+002  0       0                  6   256   # tank3.r9
+ -2 -1.4318754577636719E+002  0       0                  6   256   # tank3.r10
+ -2 1.1731534004211426E+001  0       0                  6   256   # tank3.r11
+ -2 -7.0728202819824219E+001  0       0                  6   256   # tank3.r12
+ -2 -2.0373283386230469E+001  0       0                  6   256   # tank3.r13
+ -2 -4.3726600646972656E+001  0       0                  6   256   # tank3.inputSs
+ -2 1.2177150878906250E+003  0       0                  6   256   # tank3.inputXs
+ -2 -5.0821249389648438E+002  0       0                  6   256   # tank3.inputXbh
+ -2 -2.7778034210205078E+001  0       0                  6   256   # tank3.inputXba
+ -2 -6.0052257537841797E+001  0       0                  6   256   # tank3.inputXp
+ -2 -1.4982803344726562E+002  0       0                  6   256   # tank3.inputSo
+ -2 -1.4203843688964844E+002  0       0                  6   256   # tank3.inputSno
+ -2 1.4318756103515625E+002  0       0                  6   256   # tank3.inputSnh
+ -2 -1.1731534004211426E+001  0       0                  6   256   # tank3.inputSnd
+ -2 7.0728202819824219E+001  0       0                  6   256   # tank3.inputXnd
+ -2 2.0373285293579102E+001  0       0                  6   256   # tank3.inputSalk
+ -2 1.4002540283203125E+003  0       0                  6   256   # tank3.aeration
+ -2       0                  0       0                  6   388   # tank3.MeasurePort.Q
+ -2    1333                  0       0                  1   280   # tank3.V
+ -2     240                  0       0                  1   280   # tank3.KLa
+ -2 4.5000000000000000E+000  0       0                  1   280   # tank3.de
+ -2 2.3500000000000000E+001  0       0                  1   280   # tank3.R_air
+ -2       8                  0 1.0000000000000000E+100  1   280   # tank3.So_sat
+ -2       0                  0       0                  6   388   # tank3.AirIn.Q_air
+ -2 6.7000001668930054E-001  0       0                  1   280   # tank2.Y_h
+ -2 2.3999999463558197E-001  0       0                  1   280   # tank2.Y_a
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank2.f_p
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank2.i_xb
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank2.i_xp
+ -2       4                  0       0                  1   280   # tank2.mu_h_T
+ -2 2.8000000119209290E-001  0       0                  1   280   # tank2.b_h_T
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank2.mu_a_T
+ -2 1.0000000149011612E-001  0       0                  1   280   # tank2.b_a_T
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank2.k_a_T
+ -2 1.7500000000000000E+000  0       0                  1   280   # tank2.k_h_T
+ -2 1.7500000074505806E-002  0       0                  1   280   # tank2.K_x_T
+ -2       1                  0       0                  1   280   # tank2.K_nh
+ -2      20                  0       0                  1   280   # tank2.K_s
+ -2 2.0000000298023224E-001  0       0                  1   280   # tank2.K_oh
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank2.K_no
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank2.K_oa
+ -2 8.0000001192092896E-001  0       0                  1   280   # tank2.ny_g
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank2.ny_h
+ -2      30                  0 1.0000000000000000E+100  2   280   # tank2.Si
+ -2       0                  0       0                  3   256   # tank2.der(Si)
+ -2 2.1138238906860352E+000  0 1.0000000000000000E+100  2   280   # tank2.Ss
+ -2 2.3287034878194390E-007  0       0                  3   256   # tank2.der(Ss)
+ -2 1.1490447998046875E+003  0 1.0000000000000000E+100  2   280   # tank2.Xi
+ -2 -1.6904690710362047E-005  0       0                  3   256   # tank2.der(Xi)
+ -2 5.3303890228271484E+001  0 1.0000000000000000E+100  2   280   # tank2.Xs
+ -2 1.5389352938655065E-006  0       0                  3   256   # tank2.der(Xs)
+ -2 2.6393054199218750E+003  0 1.0000000000000000E+100  2   280   # tank2.Xbh
+ -2 -5.5739066738169640E-005  0       0                  3   256   # tank2.der(Xbh)
+ -2 9.5503471374511719E+001  0 1.0000000000000000E+100  2   280   # tank2.Xba
+ -2 -8.4034123574383557E-005  0       0                  3   256   # tank2.der(Xba)
+ -2 4.3563125610351562E+002  0 1.0000000000000000E+100  2   280   # tank2.Xp
+ -2 -4.3417632696218789E-005  0       0                  3   256   # tank2.der(Xp)
+ -2 1.4382884546648711E-004  0 1.0000000000000000E+100  2   280   # tank2.So
+ -2 2.5380042512068712E-010  0       0                  3   256   # tank2.der(So)
+ -2 3.5355448722839355E+000  0 1.0000000000000000E+100  2   280   # tank2.Sno
+ -2 -8.4298353613121435E-006  0       0                  3   256   # tank2.der(Sno)
+ -2 1.4093447685241699E+001  0 1.0000000000000000E+100  2   280   # tank2.Snh
+ -2 1.4168607776809949E-005  0       0                  3   256   # tank2.der(Snh)
+ -2 5.5743688344955444E-001  0 1.0000000000000000E+100  2   280   # tank2.Snd
+ -2 -5.8581854034400749E-008  0       0                  3   256   # tank2.der(Snd)
+ -2 3.4016995429992676E+000  0 1.0000000000000000E+100  2   280   # tank2.Xnd
+ -2 7.2867926803610317E-008  0       0                  3   256   # tank2.der(Xnd)
+ -2 5.4998502731323242E+000  0 1.0000000000000000E+100  2   280   # tank2.Salk
+ -2 1.6141744936248870E-006  0       0                  3   256   # tank2.der(Salk)
+ -2 7.2520101070404053E-001  0       0                  6   256   # tank2.p1
+ -2 7.0678375244140625E+002  0       0                  6   256   # tank2.p2
+ -2 1.6026837751269341E-002  0       0                  6   256   # tank2.p3
+ -2 7.3900555419921875E+002  0       0                  6   256   # tank2.p4
+ -2 9.5503473281860352E+000  0       0                  6   256   # tank2.p5
+ -2 8.8274780273437500E+001  0       0                  6   256   # tank2.p6
+ -2 8.6834411621093750E+002  0       0                  6   256   # tank2.p7
+ -2 5.5415203094482422E+001  0       0                  6   256   # tank2.p8
+ -2       0                  0       0                  6   256   # tank2.r1
+ -2 -1.8763940429687500E+002  0       0                  6   256   # tank2.r2
+ -2       0                  0       0                  6   256   # tank2.r3
+ -2 -1.7967269897460938E+002  0       0                  6   256   # tank2.r4
+ -2 -3.1496589660644531E+001  0       0                  6   256   # tank2.r5
+ -2 -9.5343198776245117E+000  0       0                  6   256   # tank2.r6
+ -2 5.9884471893310547E+001  0       0                  6   256   # tank2.r7
+ -2 -6.4633941650390625E-001  0       0                  6   256   # tank2.r8
+ -2 -1.2165258026123047E+002  0       0                  6   256   # tank2.r9
+ -2 3.1606000900268555E+001  0       0                  6   256   # tank2.r10
+ -2 -3.2859573364257812E+001  0       0                  6   256   # tank2.r11
+ -2 8.7620013952255249E-001  0       0                  6   256   # tank2.r12
+ -2 1.0947041511535645E+001  0       0                  6   256   # tank2.r13
+ -2 1.8763940429687500E+002  0       0                  6   256   # tank2.inputSs
+ -2 1.7967269897460938E+002  0       0                  6   256   # tank2.inputXs
+ -2 3.1496534347534180E+001  0       0                  6   256   # tank2.inputXbh
+ -2 9.5342359542846680E+000  0       0                  6   256   # tank2.inputXba
+ -2 -5.9884513854980469E+001  0       0                  6   256   # tank2.inputXp
+ -2 6.4633941650390625E-001  0       0                  6   256   # tank2.inputSo
+ -2 1.2165257263183594E+002  0       0                  6   256   # tank2.inputSno
+ -2 -3.1605985641479492E+001  0       0                  6   256   # tank2.inputSnh
+ -2 3.2859573364257812E+001  0       0                  6   256   # tank2.inputSnd
+ -2 -8.7620007991790771E-001  0       0                  6   256   # tank2.inputXnd
+ -2 -1.0947039604187012E+001  0       0                  6   256   # tank2.inputSalk
+ -2       0                  0       0                  6   256   # tank2.aeration
+ -2       0                  0       0                  6   388   # tank2.MeasurePort.Q
+ -2    1000                  0       0                  1   280   # tank2.V
+ -2 6.7000001668930054E-001  0       0                  1   280   # tank1.Y_h
+ -2 2.3999999463558197E-001  0       0                  1   280   # tank1.Y_a
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank1.f_p
+ -2 7.9999998211860657E-002  0       0                  1   280   # tank1.i_xb
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank1.i_xp
+ -2       4                  0       0                  1   280   # tank1.mu_h_T
+ -2 2.8000000119209290E-001  0       0                  1   280   # tank1.b_h_T
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank1.mu_a_T
+ -2 1.0000000149011612E-001  0       0                  1   280   # tank1.b_a_T
+ -2 5.9999998658895493E-002  0       0                  1   280   # tank1.k_a_T
+ -2 1.7500000000000000E+000  0       0                  1   280   # tank1.k_h_T
+ -2 1.7500000074505806E-002  0       0                  1   280   # tank1.K_x_T
+ -2       1                  0       0                  1   280   # tank1.K_nh
+ -2      20                  0       0                  1   280   # tank1.K_s
+ -2 2.0000000298023224E-001  0       0                  1   280   # tank1.K_oh
+ -2 5.0000000000000000E-001  0       0                  1   280   # tank1.K_no
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank1.K_oa
+ -2 8.0000001192092896E-001  0       0                  1   280   # tank1.ny_g
+ -2 4.0000000596046448E-001  0       0                  1   280   # tank1.ny_h
+ -2      30                  0 1.0000000000000000E+100  2   280   # tank1.Si
+ -2       0                  0       0                  3   256   # tank1.der(Si)
+ -2 4.1482963562011719E+000  0 1.0000000000000000E+100  2   280   # tank1.Ss
+ -2 4.9281493375019636E-007  0       0                  3   256   # tank1.der(Ss)
+ -2 1.1490447998046875E+003  0 1.0000000000000000E+100  2   280   # tank1.Xi
+ -2 -1.6893682186491787E-005  0       0                  3   256   # tank1.der(Xi)
+ -2 5.5251983642578125E+001  0 1.0000000000000000E+100  2   280   # tank1.Xs
+ -2 -9.5691802926012315E-007  0       0                  3   256   # tank1.der(Xs)
+ -2 2.6396469726562500E+003  0 1.0000000000000000E+100  2   280   # tank1.Xbh
+ -2 -5.4196203564060852E-005  0       0                  3   256   # tank1.der(Xbh)
+ -2 9.5606849670410156E+001  0 1.0000000000000000E+100  2   280   # tank1.Xba
+ -2 -8.4043356764595956E-005  0       0                  3   256   # tank1.der(Xba)
+ -2 4.3498196411132812E+002  0 1.0000000000000000E+100  2   280   # tank1.Xp
+ -2 -4.3358028051443398E-005  0       0                  3   256   # tank1.der(Xp)
+ -2 7.1517373435199261E-003  0 1.0000000000000000E+100  2   280   # tank1.So
+ -2 1.0367102731834166E-008  0       0                  3   256   # tank1.der(So)
+ -2 4.8545579910278320E+000  0 1.0000000000000000E+100  2   280   # tank1.Sno
+ -2 -8.7102162069641054E-006  0       0                  3   256   # tank1.der(Sno)
+ -2 1.3750761032104492E+001  0 1.0000000000000000E+100  2   280   # tank1.Snh
+ -2 1.4143726730253547E-005  0       0                  3   256   # tank1.der(Snh)
+ -2 9.1371548175811768E-001  0 1.0000000000000000E+100  2   280   # tank1.Snd
+ -2 -3.7854874790355098E-010  0       0                  3   256   # tank1.der(Snd)
+ -2 3.3921995162963867E+000  0 1.0000000000000000E+100  2   280   # tank1.Xnd
+ -2 -8.6569407642400620E-008  0       0                  3   256   # tank1.der(Xnd)
+ -2 5.3811573982238770E+000  0 1.0000000000000000E+100  2   280   # tank1.Salk
+ -2 1.6324245279975003E-006  0       0                  3   256   # tank1.der(Salk)
+ -2 6.2619861602783203E+001  0       0                  6   256   # tank1.p1
+ -2 1.2701253662109375E+003  0       0                  6   256   # tank1.p2
+ -2 7.8275632858276367E-001  0       0                  6   256   # tank1.p3
+ -2 7.3910119628906250E+002  0       0                  6   256   # tank1.p4
+ -2 9.5606842041015625E+000  0       0                  6   256   # tank1.p5
+ -2 1.4471318054199219E+002  0       0                  6   256   # tank1.p6
+ -2 9.6775720214843750E+002  0       0                  6   256   # tank1.p7
+ -2 5.9415523529052734E+001  0       0                  6   256   # tank1.p8
+ -2       0                  0       0                  6   256   # tank1.r1
+ -2 -1.0214147949218750E+003  0       0                  6   256   # tank1.r2
+ -2       0                  0       0                  6   256   # tank1.r3
+ -2 -2.7898831176757812E+002  0       0                  6   256   # tank1.r4
+ -2 5.9364410400390625E+002  0       0                  6   256   # tank1.r5
+ -2 -8.7779283523559570E+000  0       0                  6   256   # tank1.r6
+ -2 5.9892948150634766E+001  0       0                  6   256   # tank1.r7
+ -2 -4.4964847564697266E+001  0       0                  6   256   # tank1.r8
+ -2 -2.1547422790527344E+002  0       0                  6   256   # tank1.r9
+ -2 3.4769458770751953E+001  0       0                  6   256   # tank1.r10
+ -2 -8.5297660827636719E+001  0       0                  6   256   # tank1.r11
+ -2 -3.1161513328552246E+000  0       0                  6   256   # tank1.r12
+ -2 1.7874549865722656E+001  0       0                  6   256   # tank1.r13
+ -2 1.0214147949218750E+003  0       0                  6   256   # tank1.inputSs
+ -2 2.7898831176757812E+002  0       0                  6   256   # tank1.inputXs
+ -2 -5.9364416503906250E+002  0       0                  6   256   # tank1.inputXbh
+ -2 8.7778444290161133E+000  0       0                  6   256   # tank1.inputXba
+ -2 -5.9892990112304688E+001  0       0                  6   256   # tank1.inputXp
+ -2 4.4964847564697266E+001  0       0                  6   256   # tank1.inputSo
+ -2 2.1547422790527344E+002  0       0                  6   256   # tank1.inputSno
+ -2 -3.4769443511962891E+001  0       0                  6   256   # tank1.inputSnh
+ -2 8.5297660827636719E+001  0       0                  6   256   # tank1.inputSnd
+ -2 3.1161513328552246E+000  0       0                  6   256   # tank1.inputXnd
+ -2 -1.7874547958374023E+001  0       0                  6   256   # tank1.inputSalk
+ -2       0                  0       0                  6   256   # tank1.aeration
+ -2      30                  0 1.0000000000000000E+100  6   260   # tank1.In.Si
+ -2 1.5222945213317871E+001  0 1.0000000000000000E+100  6   260   # tank1.In.Ss
+ -2 1.1490447998046875E+003  0 1.0000000000000000E+100  6   260   # tank1.In.Xi
+ -2 5.8276901245117188E+001  0 1.0000000000000000E+100  6   260   # tank1.In.Xs
+ -2 2.6332104492187500E+003  0 1.0000000000000000E+100  6   260   # tank1.In.Xbh
+ -2 9.5702018737792969E+001  0 1.0000000000000000E+100  6   260   # tank1.In.Xba
+ -2 4.3433258056640625E+002  0 1.0000000000000000E+100  6   260   # tank1.In.Xp
+ -2 4.9468126893043518E-001  0 1.0000000000000000E+100  6   260   # tank1.In.So
+ -2 7.1908283233642578E+000  0 1.0000000000000000E+100  6   260   # tank1.In.Sno
+ -2 1.3373774528503418E+001  0 1.0000000000000000E+100  6   260   # tank1.In.Snh
+ -2 1.8385518789291382E+000  0 1.0000000000000000E+100  6   260   # tank1.In.Snd
+ -2 3.4259860515594482E+000  0 1.0000000000000000E+100  6   260   # tank1.In.Xnd
+ -2 5.1873531341552734E+000  0 1.0000000000000000E+100  6   260   # tank1.In.Salk
+ -2       0                  0       0                  6   388   # tank1.MeasurePort.Q
+ -2    1000                  0       0                  1   280   # tank1.V
+ -2   18446                  0       0                  6   388   # mixer.In1.Q
+ -2      30                  0 1.0000000000000000E+100  6   260   # mixer.In1.Si
+ -2 6.9500000000000000E+001  0 1.0000000000000000E+100  6   260   # mixer.In1.Ss
+ -2 5.1200000762939453E+001  0 1.0000000000000000E+100  6   260   # mixer.In1.Xi
+ -2 2.0232000732421875E+002  0 1.0000000000000000E+100  6   260   # mixer.In1.Xs
+ -2 2.8170000076293945E+001  0 1.0000000000000000E+100  6   260   # mixer.In1.Xbh
+ -2       0                  0 1.0000000000000000E+100  6   260   # mixer.In1.Xba
+ -2       0                  0 1.0000000000000000E+100  6   260   # mixer.In1.Xp
+ -2       0                  0 1.0000000000000000E+100  6   260   # mixer.In1.So
+ -2       0                  0 1.0000000000000000E+100  6   260   # mixer.In1.Sno
+ -2 3.1559999465942383E+001  0 1.0000000000000000E+100  6   260   # mixer.In1.Snh
+ -2 6.9499998092651367E+000  0 1.0000000000000000E+100  6   260   # mixer.In1.Snd
+ -2 1.0590000152587891E+001  0 1.0000000000000000E+100  6   260   # mixer.In1.Xnd
+ -2       7                  0 1.0000000000000000E+100  6   260   # mixer.In1.Salk
+ -2       0                  0       0                  6   388   # sensor_NO.In.Q
+ -2       0                  0       0                  6   388   # sensor_O2.In.Q
+ -2   55338                  0       0                  1   280   # Constant1.k
+ -2       0                  0       0                  1   280   # RecyclePump.Q_min
+ -2   55338                  0       0                  1   280   # RecyclePump.Q_max
+ -2 1.5311747840000000E+009  0       0                  6   256   # RecyclePump.H
+ -2       0                  0       0                  1   280   # ReturnPump.Q_min
+ -2   18446                  0       0                  1   280   # ReturnPump.Q_max
+ -2   18446                  0       0                  6   256   # ReturnPump.H
+ -2       0                  0       0                  1   280   # WastePump.Q_min
+ -2     385                  0       0                  1   280   # WastePump.Q_max
+ -2     385                  0       0                  6   256   # WastePump.H
+ -2       1                  0       0                  1   280   # Constant2.k
+ -2       0                  0       0                  6   388   # sensor_NH1.In.Q
+ -2       0                  0       0                  6   388   # sensor_NO1.In.Q
+ -2 6.7000001668930054E-001  0       0                  1   280   # sensor_TKN1.Y_h
+ -2 2.3999999463558197E-001  0       0                  1   280   # sensor_TKN1.Y_a
+ -2 7.9999998211860657E-002  0       0                  1   280   # sensor_TKN1.f_p
+ -2 8.6000002920627594E-002  0       0                  1   280   # sensor_TKN1.i_xb
+ -2 5.9999998658895493E-002  0       0                  1   280   # sensor_TKN1.i_xp
+ -2       0                  0       0                  6   388   # sensor_TKN1.In.Q
+ -2 1.0661162376403809E+001  0       0                  6   256   # sensor_TKN1.TKN[1]
+ -2 1.9649700164794922E+001  0       0                  6   256   # sensor_TKN1.TKN[2]
+ -2       0                  0       0                  6   388   # sensor_COD1.In.Q
+ -2 4.8304637908935547E+001  0       0                  6   256   # sensor_COD1.COD
+ -2       0                  0       0                  6   388   # sensor_TSS1.In.Q
+ -2 3.2647663574218750E+003  0       0                  6   256   # sensor_TSS1.TSS
+ -2      14                  1 1.0000000000000000E+100  6   258   # CombiTableTime.nout
+ -2       1                  0       0                  6   257   # CombiTableTime.tableOnFile
+ -2       0                  0       0                  1   280   # CombiTableTime.table[1, 1]
+ -2       0                  0       0                  1   280   # CombiTableTime.table[1, 2]
+ -2       1                  0       0                  1   280   # CombiTableTime.table[2, 1]
+ -2       1                  0       0                  1   280   # CombiTableTime.table[2, 2]
+ -2       1                  0       0                  1   281   # CombiTableTime.verboseRead
+ -2       2                  0       0                  1   282   # CombiTableTime.columns[1]
+ -2       3                  0       0                  1   282   # CombiTableTime.columns[2]
+ -2       4                  0       0                  1   282   # CombiTableTime.columns[3]
+ -2       5                  0       0                  1   282   # CombiTableTime.columns[4]
+ -2       6                  0       0                  1   282   # CombiTableTime.columns[5]
+ -2       7                  0       0                  1   282   # CombiTableTime.columns[6]
+ -2       8                  0       0                  1   282   # CombiTableTime.columns[7]
+ -2       9                  0       0                  1   282   # CombiTableTime.columns[8]
+ -2      10                  0       0                  1   282   # CombiTableTime.columns[9]
+ -2      11                  0       0                  1   282   # CombiTableTime.columns[10]
+ -2      12                  0       0                  1   282   # CombiTableTime.columns[11]
+ -2      13                  0       0                  1   282   # CombiTableTime.columns[12]
+ -2      14                  0       0                  1   282   # CombiTableTime.columns[13]
+ -2      15                  0       0                  1   282   # CombiTableTime.columns[14]
+ -2       1                  1       3                  6   258   # CombiTableTime.smoothness
+ -2       1                  1       4                  1   282   # CombiTableTime.extrapolation
+ -2       0                  0       0                  1   280   # CombiTableTime.offset[1]
+ -2       0                  0       0                  1   280   # CombiTableTime.startTime
+ -2       0                  0       0                  6   256   # CombiTableTime.t_min
+ -2      14                  0       0                  6   256   # CombiTableTime.t_max
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[1]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[2]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[3]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[4]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[5]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[6]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[7]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[8]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[9]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[10]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[11]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[12]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[13]
+  0       0                  0       0                  6  1280   # CombiTableTime.p_offset[14]
+  0       0                  0       0                  6  1282   # CombiTableTime.tableID.id
+  0       0                  0       0                  6  1352   # CombiTableTime.nextTimeEvent
+  0       0                  0       0                  6  1280   # CombiTableTime.tableOnFileRead
+ -2      15                  0       0                  1   280   # Constant3.k
+
+
+# Matrix with 6 columns defining the initial value calculation
+# (columns 5 and 6 are not utilized for the calculation but are
+#  reported by dymosim via dymosim -i for user convenience):
+#
+# column 1: Type of initial value
+#           = -2: special case: for continuing simulation (column 2 = value)
+#           = -1: fixed value (column 2 = fixed value)
+#           =  0: free value, i.e., no restriction (column 2 = initial value)
+#           >  0: desired value (column 1 = weight for optimization
+#                                column 2 = desired value)
+#                 use weight=1, since automatic scaling usually
+#                 leads to equally weighted terms
+# column 2: fixed, free or desired value according to column 1.
+# column 3: Minimum value (ignored, if Minimum >= Maximum).
+# column 4: Maximum value (ignored, if Minimum >= Maximum).
+#           Minimum and maximum restrict the search range in initial
+#           value calculation. They might also be used for scaling.
+# column 5: Category of variable.
+#           = 1: parameter.
+#           = 2: state.
+#           = 3: state derivative.
+#           = 4: output.
+#           = 5: input.
+#           = 6: auxiliary variable.
+# column 6: Data type of variable.
+#           = 0: real.
+#           = 1: boolean.
+#           = 2: integer.
+#
+# Initial values are calculated according to the following procedure:
+#
+# - If parameters, states and inputs are FIXED, and other variables
+#   are FREE, no special action takes place (default setting).
+#
+# - If there are only FIXED and FREE variables and the number of
+#   FREE parameters, states and inputs is IDENTICAL to the number of
+#   FIXED state derivatives, outputs and auxiliary variables, a non-linear
+#   equation is solved to determine a consistent set of initial conditions.
+#
+# - In all other cases the following optimization problem is solved:
+#      min( sum( weight(i)*( (value(i) - DESIRED(i))/scale(i) )^2 ) )
+#   under the constraint that the differential equation is fulfilled
+#   at the initial time. In most cases weight(i)=1 is sufficient, due
+#   to the automatic scaling (if DESIRED(i) is not close to zero,
+#   scale(i) = DESIRED(i). Otherwise, the scaling is based on the
+#   nominal value (and maybe minimum and maximum values given in 
+#   column 3 and 4). If these values are zero, scale(i)=1 is used).
+#
+char initialDescription(754,97)
+[m3/d]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[m3/d]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+
+
+
+
+
+
+height of secondary clarifier [m]
+number of layers of SC model [:#(type=Integer)]
+height of m-th secondary clarifier layer [m]
+area of secondary clarifier [m2]
+threshold for X [mg/l]
+[mg/l]
+[m3/d]
+[m3/d]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+sedimentation flux m-th layer [g/(m2*d)]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[mg/l]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[mg/l]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[mg/l]
+[g/(m2*d)]
+[m]
+[m2]
+total sludge concentration in m-th layer [mg/l]
+der(total sludge concentration in m-th layer) [mg/(l.s)]
+sink velocity in m-th layer [m/d]
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+[mg/l]
+[m3/d]
+[m3/d]
+Heterotrophic Yield [g Xbh COD formed/(g COD utilised)] []
+Autotrophic Yield [g Xba COD formed/(g N utilised)] []
+Fraction of biomass to particulate products [-] []
+Fraction nitrogen in biomass [g N/(g COD)] []
+Fraction nitrogen in particulate products [g N/(g COD)] []
+Maximum heterotrophic growth rate at T=15 deg C [day^-1] []
+Heterotrophic decay rate at T=15 deg C [day^-1] []
+Maximum autotrophic growth rate at T=15 deg C[day^-1] []
+Autotrophic decay rate at T=15 deg C [day^-1] []
+Ammonification rate at T=15 deg C [m3/(g COD day)] []
+Maximum specific hydrolysis rate at T=15 deg C [g Xs/(g Xbh COD day)] []
+Half-saturation (hydrolysis) at T=15 deg C [g Xs/(g Xbh COD)] []
+Half-saturation (auto. growth) [g NH-N/m3] []
+Half-saturation (hetero. growth) [g COD/m3] []
+Half-saturation (hetero. oxygen) [g O/m3] []
+Half-saturation (nitrate) [g NO-N/m3] []
+Half-saturation (auto. oxygen) [g O/m3] []
+Anoxic growth rate correction factor [-] []
+Anoxic hydrolysis rate correction factor [-] []
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Particulate inert organic matter [mg/l]
+der(Particulate inert organic matter) [mg/(l.s)]
+Slowly biodegradable substrate [mg/l]
+der(Slowly biodegradable substrate) [mg/(l.s)]
+Active heterotrophic biomass [mg/l]
+der(Active heterotrophic biomass) [mg/(l.s)]
+Active autotrophic biomass [mg/l]
+der(Active autotrophic biomass) [mg/(l.s)]
+Particulate products from biomass decay [mg/l]
+der(Particulate products from biomass decay) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Particulate biodegradable organic nitrogen [mg/l]
+der(Particulate biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[m3/d]
+Volume of nitrification tank [m3]
+Oxygen transfer coeff per day
+depth of aeration [m]
+specific oxygen feed factor [gO2/(m^3*m)] []
+Dissolved oxygen saturation [mg/l]
+[m3/d]
+Heterotrophic Yield [g Xbh COD formed/(g COD utilised)] []
+Autotrophic Yield [g Xba COD formed/(g N utilised)] []
+Fraction of biomass to particulate products [-] []
+Fraction nitrogen in biomass [g N/(g COD)] []
+Fraction nitrogen in particulate products [g N/(g COD)] []
+Maximum heterotrophic growth rate at T=15 deg C [day^-1] []
+Heterotrophic decay rate at T=15 deg C [day^-1] []
+Maximum autotrophic growth rate at T=15 deg C[day^-1] []
+Autotrophic decay rate at T=15 deg C [day^-1] []
+Ammonification rate at T=15 deg C [m3/(g COD day)] []
+Maximum specific hydrolysis rate at T=15 deg C [g Xs/(g Xbh COD day)] []
+Half-saturation (hydrolysis) at T=15 deg C [g Xs/(g Xbh COD)] []
+Half-saturation (auto. growth) [g NH-N/m3] []
+Half-saturation (hetero. growth) [g COD/m3] []
+Half-saturation (hetero. oxygen) [g O/m3] []
+Half-saturation (nitrate) [g NO-N/m3] []
+Half-saturation (auto. oxygen) [g O/m3] []
+Anoxic growth rate correction factor [-] []
+Anoxic hydrolysis rate correction factor [-] []
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Particulate inert organic matter [mg/l]
+der(Particulate inert organic matter) [mg/(l.s)]
+Slowly biodegradable substrate [mg/l]
+der(Slowly biodegradable substrate) [mg/(l.s)]
+Active heterotrophic biomass [mg/l]
+der(Active heterotrophic biomass) [mg/(l.s)]
+Active autotrophic biomass [mg/l]
+der(Active autotrophic biomass) [mg/(l.s)]
+Particulate products from biomass decay [mg/l]
+der(Particulate products from biomass decay) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Particulate biodegradable organic nitrogen [mg/l]
+der(Particulate biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[m3/d]
+Volume of nitrification tank [m3]
+Oxygen transfer coeff per day
+depth of aeration [m]
+specific oxygen feed factor [gO2/(m^3*m)] []
+Dissolved oxygen saturation [mg/l]
+[m3/d]
+Heterotrophic Yield [g Xbh COD formed/(g COD utilised)] []
+Autotrophic Yield [g Xba COD formed/(g N utilised)] []
+Fraction of biomass to particulate products [-] []
+Fraction nitrogen in biomass [g N/(g COD)] []
+Fraction nitrogen in particulate products [g N/(g COD)] []
+Maximum heterotrophic growth rate at T=15 deg C [day^-1] []
+Heterotrophic decay rate at T=15 deg C [day^-1] []
+Maximum autotrophic growth rate at T=15 deg C[day^-1] []
+Autotrophic decay rate at T=15 deg C [day^-1] []
+Ammonification rate at T=15 deg C [m3/(g COD day)] []
+Maximum specific hydrolysis rate at T=15 deg C [g Xs/(g Xbh COD day)] []
+Half-saturation (hydrolysis) at T=15 deg C [g Xs/(g Xbh COD)] []
+Half-saturation (auto. growth) [g NH-N/m3] []
+Half-saturation (hetero. growth) [g COD/m3] []
+Half-saturation (hetero. oxygen) [g O/m3] []
+Half-saturation (nitrate) [g NO-N/m3] []
+Half-saturation (auto. oxygen) [g O/m3] []
+Anoxic growth rate correction factor [-] []
+Anoxic hydrolysis rate correction factor [-] []
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Particulate inert organic matter [mg/l]
+der(Particulate inert organic matter) [mg/(l.s)]
+Slowly biodegradable substrate [mg/l]
+der(Slowly biodegradable substrate) [mg/(l.s)]
+Active heterotrophic biomass [mg/l]
+der(Active heterotrophic biomass) [mg/(l.s)]
+Active autotrophic biomass [mg/l]
+der(Active autotrophic biomass) [mg/(l.s)]
+Particulate products from biomass decay [mg/l]
+der(Particulate products from biomass decay) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Particulate biodegradable organic nitrogen [mg/l]
+der(Particulate biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[m3/d]
+Volume of nitrification tank [m3]
+Oxygen transfer coeff per day
+depth of aeration [m]
+specific oxygen feed factor [gO2/(m^3*m)] []
+Dissolved oxygen saturation [mg/l]
+[m3/d]
+Heterotrophic Yield [g Xbh COD formed/(g COD utilised)] []
+Autotrophic Yield [g Xba COD formed/(g N utilised)] []
+Fraction of biomass to particulate products [-] []
+Fraction nitrogen in biomass [g N/(g COD)] []
+Fraction nitrogen in particulate products [g N/(g COD)] []
+Maximum heterotrophic growth rate at T=15 deg C [day^-1] []
+Heterotrophic decay rate at T=15 deg C [day^-1] []
+Maximum autotrophic growth rate at T=15 deg C[day^-1] []
+Autotrophic decay rate at T=15 deg C [day^-1] []
+Ammonification rate at T=15 deg C [m3/(g COD day)] []
+Maximum specific hydrolysis rate at T=15 deg C [g Xs/(g Xbh COD day)] []
+Half-saturation (hydrolysis) at T=15 deg C [g Xs/(g Xbh COD)] []
+Half-saturation (auto. growth) [g NH-N/m3] []
+Half-saturation (hetero. growth) [g COD/m3] []
+Half-saturation (hetero. oxygen) [g O/m3] []
+Half-saturation (nitrate) [g NO-N/m3] []
+Half-saturation (auto. oxygen) [g O/m3] []
+Anoxic growth rate correction factor [-] []
+Anoxic hydrolysis rate correction factor [-] []
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Particulate inert organic matter [mg/l]
+der(Particulate inert organic matter) [mg/(l.s)]
+Slowly biodegradable substrate [mg/l]
+der(Slowly biodegradable substrate) [mg/(l.s)]
+Active heterotrophic biomass [mg/l]
+der(Active heterotrophic biomass) [mg/(l.s)]
+Active autotrophic biomass [mg/l]
+der(Active autotrophic biomass) [mg/(l.s)]
+Particulate products from biomass decay [mg/l]
+der(Particulate products from biomass decay) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Particulate biodegradable organic nitrogen [mg/l]
+der(Particulate biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[m3/d]
+Volume of denitrification tank [m3]
+Heterotrophic Yield [g Xbh COD formed/(g COD utilised)] []
+Autotrophic Yield [g Xba COD formed/(g N utilised)] []
+Fraction of biomass to particulate products [-] []
+Fraction nitrogen in biomass [g N/(g COD)] []
+Fraction nitrogen in particulate products [g N/(g COD)] []
+Maximum heterotrophic growth rate at T=15 deg C [day^-1] []
+Heterotrophic decay rate at T=15 deg C [day^-1] []
+Maximum autotrophic growth rate at T=15 deg C[day^-1] []
+Autotrophic decay rate at T=15 deg C [day^-1] []
+Ammonification rate at T=15 deg C [m3/(g COD day)] []
+Maximum specific hydrolysis rate at T=15 deg C [g Xs/(g Xbh COD day)] []
+Half-saturation (hydrolysis) at T=15 deg C [g Xs/(g Xbh COD)] []
+Half-saturation (auto. growth) [g NH-N/m3] []
+Half-saturation (hetero. growth) [g COD/m3] []
+Half-saturation (hetero. oxygen) [g O/m3] []
+Half-saturation (nitrate) [g NO-N/m3] []
+Half-saturation (auto. oxygen) [g O/m3] []
+Anoxic growth rate correction factor [-] []
+Anoxic hydrolysis rate correction factor [-] []
+Soluble inert organic matter [mg/l]
+der(Soluble inert organic matter) [mg/(l.s)]
+Readily biodegradable substrate [mg/l]
+der(Readily biodegradable substrate) [mg/(l.s)]
+Particulate inert organic matter [mg/l]
+der(Particulate inert organic matter) [mg/(l.s)]
+Slowly biodegradable substrate [mg/l]
+der(Slowly biodegradable substrate) [mg/(l.s)]
+Active heterotrophic biomass [mg/l]
+der(Active heterotrophic biomass) [mg/(l.s)]
+Active autotrophic biomass [mg/l]
+der(Active autotrophic biomass) [mg/(l.s)]
+Particulate products from biomass decay [mg/l]
+der(Particulate products from biomass decay) [mg/(l.s)]
+Dissolved oxygen [mg/l]
+der(Dissolved oxygen) [mg/(l.s)]
+Nitrate and nitrite nitrogen [mg/l]
+der(Nitrate and nitrite nitrogen) [mg/(l.s)]
+Ammonium nitrogen [mg/l]
+der(Ammonium nitrogen) [mg/(l.s)]
+Soluble biodegradable organic nitrogen [mg/l]
+der(Soluble biodegradable organic nitrogen) [mg/(l.s)]
+Particulate biodegradable organic nitrogen [mg/l]
+der(Particulate biodegradable organic nitrogen) [mg/(l.s)]
+Alkalinity [mmol/l]
+der(Alkalinity) [m-3.s-1.mol]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mmol/l]
+[m3/d]
+Volume of denitrification tank [m3]
+[m3/d]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mg/l]
+[mmol/l]
+[m3/d]
+[m3/d]
+Constant output value
+minimum pump capacity [m3/d]
+maximum pump capacity [m3/d]
+
+minimum pump capacity [m3/d]
+maximum pump capacity [m3/d]
+
+minimum pump capacity [m3/d]
+maximum pump capacity [m3/d]
+
+Constant output value
+[m3/d]
+[m3/d]
+Heterotrophic Yield [g Xbh COD formed/(g COD utilised)] []
+Autotrophic Yield [g Xba COD formed/(g N utilised)] []
+Fraction of biomass to particulate products [-] []
+Fraction nitrogen in biomass [g N/(g COD)] []
+Fraction nitrogen in particulate products [g N/(g COD)] []
+[m3/d]
+
+
+[m3/d]
+
+[m3/d]
+
+Number of outputs [:#(type=Integer)]
+= true, if table is defined on file or in function usertab [:#(type=Boolean)]
+Table matrix (time = first column; e.g., table=[0,2])
+Table matrix (time = first column; e.g., table=[0,2])
+Table matrix (time = first column; e.g., table=[0,2])
+Table matrix (time = first column; e.g., table=[0,2])
+= true, if info message that file is loading is to be printed [:#(type=Boolean)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Columns of table to be interpolated [:#(type=Integer)]
+Smoothness of table interpolation [:#(type=Modelica.Blocks.Types.Smoothness)]
+Extrapolation of data outside the definition range [:#(type=Modelica.Blocks.Types.Extrapolation)]
+Offsets of output signals
+Output = offset for time < startTime [s]
+Minimum abscissa value defined in table [s]
+Maximum abscissa value defined in table [s]
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+Offsets of output signals
+[:#(type=Integer)]
+Next time event instant [s]
+= 1, if table was successfully read from file
+Constant output value
+
