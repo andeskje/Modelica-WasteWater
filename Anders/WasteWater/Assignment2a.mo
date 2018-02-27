@@ -121,7 +121,8 @@ Parameters:
   alpha - oxygen transfer factor
   de    - depth of the aeration system [m]
   R_air - specific oxygen feed factor [g O2/(m3*m)]
-"));
+"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics));
 end nitri;
 
 model SecClarModTakacs "Secondary Clarifier ASM1 Model based on Takacs"
@@ -1069,8 +1070,6 @@ Main Author:
         annotation (Placement(transformation(extent={{-104,22},{-84,42}})));
       WasteWater.Assignment2a.sensor_NO sensor_NO
         annotation (Placement(transformation(extent={{-42,48},{-22,68}})));
-      WasteWater.Assignment2a.sensor_O2 sensor_O2
-        annotation (Placement(transformation(extent={{1,25},{18,42}})));
       Modelica.Blocks.Sources.Constant Constant1(k=55338)
                                                  annotation (Placement(
             transformation(extent={{-93,-56},{-73,-36}})));
@@ -1157,8 +1156,6 @@ Main Author:
         annotation (Line(points={{43,-58},{46,-58},{46,-28.5},{34.9,-28.5}},
                                                                          color={0,
               0,255}));
-      connect(tank5.MeasurePort, sensor_O2.In) annotation (Line(points={{9.5,8.5},
-              {9.5,25}}));
       connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,15},{40,6.6}}));
 
       connect(RecyclePump.u, Constant1.y) annotation (Line(

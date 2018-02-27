@@ -726,10 +726,10 @@ model sensor_O2 "Ideal sensor to measure dissolved oxygen concentration"
   extends WasteWater.Icons.sensor_O2;
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-10,
             -110},{10,-90}})));
-  Modelica.Blocks.Interfaces.RealOutput KLa annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealOutput So annotation (Placement(transformation(
           extent={{88,-10},{108,10}})));
-equation
 
+equation
   In.Q = 0;
   So = In.So;
 
@@ -1060,11 +1060,13 @@ Main Author:
         annotation (Placement(transformation(extent={{48,-5},{68,15}})));
       WasteWater.Assignment2a.divider2 divider
         annotation (Placement(transformation(extent={{20,-6},{40,14}})));
-      WasteWater.Assignment2a.nitri_tank5 tank5(V=1333)
+      WasteWater.Assignment2d.nitri_tank5 tank5(V=1333)
         annotation (Placement(transformation(extent={{-6,-6},{14,14}})));
-      WasteWater.Assignment2a.nitri tank4(V=1333)
+      WasteWater.Assignment2d.nitri_34
+                                    tank4(V=1333)
         annotation (Placement(transformation(extent={{-32,-6},{-12,14}})));
-      WasteWater.Assignment2a.nitri tank3(V=1333)
+      WasteWater.Assignment2d.nitri_34
+                                    tank3(V=1333)
         annotation (Placement(transformation(extent={{-60,-6},{-40,14}})));
       WasteWater.Assignment2a.deni tank2
         annotation (Placement(transformation(extent={{-48,22},{-28,42}})));
@@ -1116,10 +1118,8 @@ Main Author:
       Modelica.Blocks.Sources.Constant Constant3(k=15)
                                                  annotation (Placement(
             transformation(extent={{-32,75},{-12,95}})));
-      WasteWater.Assignment2d.sensor_O2 sensor_O2_1
-        annotation (Placement(transformation(extent={{1,46},{21,66}})));
-      WasteWater.Assignment2d.sensor_COD sensor_COD
-        annotation (Placement(transformation(extent={{52,50},{72,70}})));
+      WasteWater.Assignment2d.AE AE
+        annotation (Placement(transformation(extent={{-11,19},{9,39}})));
     equation
       connect(divider.Out1, Settler.Feed) annotation (Line(points={{40,6.6},{44,6.6},
               {44,6.4},{48,6.4}}));
@@ -1127,8 +1127,8 @@ Main Author:
               {20,4.3}}));
       connect(tank4.Out, tank5.In) annotation (Line(points={{-12,4},{-6,4}}));
       connect(tank3.Out, tank4.In) annotation (Line(points={{-40,4},{-32,4}}));
-      connect(tank3.In, tank2.Out) annotation (Line(points={{-60,4},{-70,4},{-70,
-              18},{-18,18},{-18,32},{-28,32}}));
+      connect(tank3.In, tank2.Out) annotation (Line(points={{-60,4},{-71,4},{
+              -71,18},{-19,18},{-19,32},{-28,32}}));
       connect(tank1.Out, tank2.In) annotation (Line(points={{-56,32},{-48,32}}));
       connect(mixer.Out, tank1.In) annotation (Line(points={{-84,31.6},{-80,31.6},{-80,
               32},{-76,32}}));
@@ -1194,9 +1194,17 @@ Main Author:
           points={{-6,8},{-32,8}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(tank5.MeasurePort, sensor_O2_1.In) annotation (Line(
-          points={{9.5,8.5},{9.5,19.75},{11,19.75},{11,46}},
-          color={0,0,0},
+      connect(AE.KLa4, tank3.KLaOut) annotation (Line(
+          points={{-6,20},{-24,20},{-24,12.2},{-42.2,12.2}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(AE.KLa3, tank4.KLaOut) annotation (Line(
+          points={{-1,20},{-8,20},{-8,12.2},{-14.2,12.2}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(AE.KLa5, tank5.KLaOut) annotation (Line(
+          points={{4,20},{8,20},{8,11.6},{11.8,11.6}},
+          color={0,0,127},
           smooth=Smooth.None));
       annotation (
         Diagram(coordinateSystem(
@@ -6245,10 +6253,14 @@ model nitri_tank5 "ASM1 nitrification tank"
           extent={{50,40},{60,50}})));
   Modelica.Blocks.Interfaces.RealInput T annotation (Placement(transformation(
           extent={{-110,30},{-90,50}})));
+
+  Modelica.Blocks.Interfaces.RealOutput KLaOut annotation (Placement(transformation(
+          extent={{68,66},{88,86}})));
+
   Interfaces.AirFlow AirIn annotation (Placement(transformation(extent={{-5,
             -103},{5,-93}})));
-equation
 
+equation
   // Temperature dependent oxygen saturation by Simba
   //So_sat = 13.89 + (-0.3825 + (0.007311 - 0.00006588*T)*T)*T;
   // extends the Oxygen differential equation by an aeration term
@@ -6258,9 +6270,9 @@ equation
   //aeration = (inputSo*In.Q + R_air*V + KLa*V*(So_sat - So) - Out.Q*So)/V;
   //aeration = (inputSo*In.Q + R_air*V - Out.Q*So)/V;
   aeration = KLa * (So_sat - So);
-  //aeration = KLa * (So_sat - So);
 
   // volume dependent dilution term of each concentration
+  KLaOut = KLa;
 
   inputSi = (In.Si - Si)*In.Q/V;
   inputSs = (In.Ss - Ss)*In.Q/V;
@@ -6289,8 +6301,324 @@ Parameters:
   alpha - oxygen transfer factor
   de    - depth of the aeration system [m]
   R_air - specific oxygen feed factor [g O2/(m3*m)]
-"));
+"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+                    graphics));
 end nitri_tank5;
+
+model AE "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+
+  Modelica.Blocks.Interfaces.RealOutput AE(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+  Modelica.Blocks.Interfaces.RealInput KLa3 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={0,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa4 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={-50,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa5 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={50,-90})));
+
+  Real T(start=1e-3);
+
+equation
+  der(T) = 1.0;
+  der(AE*T) = 2/(1.8*1000)*1333*(KLa3 + KLa4 + KLa5);
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end AE;
+
+model nitri_34 "ASM1 nitrification tank"
+  // nitrification (aerated) tank, based on the ASM1 model
+
+  extends WasteWater.Icons.nitri;
+  extends Interfaces.ASM1base;
+
+  // tank specific parameters
+  parameter Modelica.SIunits.Volume V=1333 "Volume of nitrification tank";
+
+  // aeration system dependent parameters
+  //parameter Real alpha=0.7 "Oxygen transfer factor";
+  parameter Real KLa=240 "Oxygen transfer coeff per day";
+  parameter Modelica.SIunits.Length de=4.5 "depth of aeration";
+  parameter Real R_air=23.5 "specific oxygen feed factor [gO2/(m^3*m)]";
+  parameter WWU.MassConcentration So_sat = 8.0 "Dissolved oxygen saturation";
+
+  Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-110,
+            -10},{-90,10}})));
+  Interfaces.WWFlowAsm1out Out annotation (Placement(transformation(extent={{90,
+            -10},{110,10}})));
+  Interfaces.WWFlowAsm1out MeasurePort annotation (Placement(transformation(
+          extent={{50,40},{60,50}})));
+
+  Interfaces.AirFlow AirIn annotation (Placement(transformation(extent={{-5,
+            -103},{5,-93}})));
+
+  Modelica.Blocks.Interfaces.RealOutput KLaOut
+                                         annotation (Placement(transformation(
+          extent={{68,72},{88,92}})));
+equation
+  // Temperature dependent oxygen saturation by Simba
+  //So_sat = 13.89 + (-0.3825 + (0.007311 - 0.00006588*T)*T)*T;
+  // extends the Oxygen differential equation by an aeration term
+  // aeration [mgO2/l]; AirIn.Q_air needs to be in
+  // Simulationtimeunit [m3*day^-1]
+  //aeration = (alpha*(So_sat - So)/So_sat*AirIn.Q_air*R_air*de)/V;
+  //aeration = (inputSo*In.Q + R_air*V + KLa*V*(So_sat - So) - Out.Q*So)/V;
+  //aeration = (inputSo*In.Q + R_air*V - Out.Q*So)/V;
+  aeration = KLa * (So_sat - So);
+
+  //aeration = KLa * (So_sat - So);
+
+  // volume dependent dilution term of each concentration
+  KLaOut = KLa;
+
+  inputSi = (In.Si - Si)*In.Q/V;
+  inputSs = (In.Ss - Ss)*In.Q/V;
+  inputXi = (In.Xi - Xi)*In.Q/V;
+  inputXs = (In.Xs - Xs)*In.Q/V;
+  inputXbh = (In.Xbh - Xbh)*In.Q/V;
+  inputXba = (In.Xba - Xba)*In.Q/V;
+  inputXp = (In.Xp - Xp)*In.Q/V;
+  inputSo = (In.So - So)*In.Q/V;
+  inputSno = (In.Sno - Sno)*In.Q/V;
+  inputSnh = (In.Snh - Snh)*In.Q/V;
+  inputSnd = (In.Snd - Snd)*In.Q/V;
+  inputXnd = (In.Xnd - Xnd)*In.Q/V;
+  inputSalk = (In.Salk - Salk)*In.Q/V;
+
+  /*connect(KLa, KLa) annotation (Line(
+      points={{88,72},{88,72}},
+      color={0,0,127},
+      smooth=Smooth.None));
+  */
+  annotation (
+    Documentation(info="This component models the ASM1 processes and reactions taking place in an aerated (nitrification) tank
+of a wastewater treatment plant.
+
+The InPort signal gives the tank temperature to the model.
+
+Parameters:
+
+        - all soichiometric and kinetic parameters of the activated sludge model No.1 (ASM1)
+  V     - volume of the tank [m3]
+  alpha - oxygen transfer factor
+  de    - depth of the aeration system [m]
+  R_air - specific oxygen feed factor [g O2/(m3*m)]
+"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+            100}}), graphics));
+end nitri_34;
+
+model EQ "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+
+  constant Real B_SS = 2;
+  constant Real B_COD = 1;
+  constant Real B_Nkj = 30;
+  constant Real B_NO = 10;
+  constant Real B_BOD5 = 2;
+
+  Modelica.Blocks.Interfaces.RealOutput EQ(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+  Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-10,
+            -110},{10,-90}})));
+
+  Real T(start=1e-3);
+
+equation
+  /* implement these
+  COD_e = In.Snh + In.Snd + In.Xnd + 
+  BOD_5e
+  SSe =
+  S_Nkje
+  */
+
+  der(EQ*T) = 1/1000*(B_SS*SSe + B_COD*COD_e + B_Nkj*S_Nkje +  B_NO*1                   + B_BOD5*BOD_5e)*In.Q;
+                                                                      /*<- wrong here*/
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+
+end EQ;
+
+model ME "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+
+  Modelica.Blocks.Interfaces.RealOutput ME(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+  Modelica.Blocks.Interfaces.RealInput KLa3 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={0,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa4 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={-50,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa5 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={50,-90})));
+
+  Real dummy3=0;
+
+  Real T(start=1e-3);
+
+equation
+  der(T) = 1.0;
+
+  if KLa3 < 20 then
+    dummy3 = 1333*0.005*KLa3;
+  end if;
+
+  if KLa < 20 then
+    der(ME*T) = 2/(1.8*1000)*1333*(KLa3 + KLa4 + KLa5);
+  else
+    der(ME*T) = 0;
+  end if;
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end ME;
 annotation (
   Documentation(info="This library contains components to build models of biological municipal
 wastewater treatment plants based on the Activated Sludge Model No.1 (ASM1) by the

@@ -350,7 +350,7 @@ Main Author:
                                                                        color={0,
             0,255}));
     connect(tank5.MeasurePort, sensor_O2.In) annotation (Line(points={{9.5,8.5},
-            {9.5,25},{9.5,25}}));
+            {9.5,25}}));
     connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,15},{40,
             6.6}}));
 
