@@ -121,7 +121,8 @@ Parameters:
   alpha - oxygen transfer factor
   de    - depth of the aeration system [m]
   R_air - specific oxygen feed factor [g O2/(m3*m)]
-"));
+"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}), graphics));
 end nitri;
 
 model SecClarModTakacs "Secondary Clarifier ASM1 Model based on Takacs"
@@ -227,14 +228,12 @@ equation
           -2.22045e-15,-17}}));
   connect(S8.Up, S9.Dn) annotation (Line(points={{-2.22045e-15,55},{
           -2.22045e-15,59}}));
-  connect(Feed, S6.In) annotation (Line(points={{-100,10},{-67.5,10},{-67.5,9.8},
-          {-35,9.8}}));
-  connect(S1.PQw, Waste) annotation (Line(points={{17.5,-93},{17.5,-100},{30,
-          -100}}));
+  connect(Feed, S6.In) annotation (Line(points={{-100,14},{-67.5,14},{-67.5,9.8},
+            {-35,9.8}}));
+  connect(S1.PQw, Waste) annotation (Line(points={{17.5,-93},{17.5,-96},{30,-96}}));
   connect(S10.Out, Effluent) annotation (Line(points={{35,85.5},{67.5,85.5},{
-          67.5,57},{100,57}}));
-  connect(S1.PQr, Return) annotation (Line(points={{-21,-93},{-21,-100},{-30,
-          -100}}));
+            67.5,57},{102,57}}));
+  connect(S1.PQr, Return) annotation (Line(points={{-21,-93},{-21,-96},{-30,-96}}));
 
   // total sludge concentration in clarifier feed
   Xf = 0.75*(Feed.Xs + Feed.Xbh + Feed.Xba + Feed.Xp + Feed.Xi);
@@ -718,17 +717,17 @@ further processed with blocks of the Modelica.Blocks library).
 "));
 end sensor_NO;
 
-model sensor_O2 "Ideal sensor to measure dissolved oxygen concentration"
+model sensor_KLa "Ideal sensor to measure dissolved oxygen concentration"
 
   extends WasteWater.Icons.sensor_O2;
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-10,
             -110},{10,-90}})));
-  Modelica.Blocks.Interfaces.RealOutput So annotation (Placement(transformation(
+  Modelica.Blocks.Interfaces.RealOutput KLa annotation (Placement(transformation(
           extent={{88,-10},{108,10}})));
 equation
 
   In.Q = 0;
-  So = In.So;
+  KLa = In.KLa;
 
   annotation (
     Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
@@ -775,7 +774,7 @@ further processed with blocks of the Modelica.Blocks library).
         Line(points={{50,0},{88,0}}),
         Text(extent={{-80,100},{80,60}}, textString=
                                              "%name")}));
-end sensor_O2;
+end sensor_KLa;
 
 model sensor_Q
     "Ideal sensor to measure the flow rate of an ASM1 wastewater stream"
@@ -1071,8 +1070,6 @@ Main Author:
         annotation (Placement(transformation(extent={{-104,22},{-84,42}})));
       WasteWater.Assignment2a.sensor_NO sensor_NO
         annotation (Placement(transformation(extent={{-42,48},{-22,68}})));
-      WasteWater.Assignment2a.sensor_O2 sensor_O2
-        annotation (Placement(transformation(extent={{1,25},{18,42}})));
       Modelica.Blocks.Sources.Constant Constant1(k=55338)
                                                  annotation (Placement(
             transformation(extent={{-93,-56},{-73,-36}})));
@@ -1100,7 +1097,7 @@ Main Author:
       WasteWater.ASM1.sensor_COD sensor_COD1 annotation (Placement(transformation(
               extent={{97,-5},{113,11}})));
       WasteWater.ASM1.sensor_TSS sensor_TSS1 annotation (Placement(transformation(
-              extent={{32,15},{48,30}})));
+              extent={{32,22},{48,37}})));
       Modelica.Blocks.Sources.CombiTimeTable CombiTableTime(
         fileName=Modelica.Utilities.Files.loadResource("modelica://WasteWater/Resources/ASM1/Inf_dry.txt"),
         table=[0,0; 1,1],
@@ -1159,9 +1156,8 @@ Main Author:
         annotation (Line(points={{43,-58},{46,-58},{46,-28.5},{34.9,-28.5}},
                                                                          color={0,
               0,255}));
-      connect(tank5.MeasurePort, sensor_O2.In) annotation (Line(points={{9.5,8.5},{9.5,
-              25},{9.5,25}}));
-      connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,15},{40,6.6}}));
+      connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,22},{
+              40,6.6}}));
 
       connect(RecyclePump.u, Constant1.y) annotation (Line(
           points={{-75.1,-14.5},{-65,-14.5},{-65,-46},{-72,-46}},
@@ -6225,7 +6221,7 @@ model nitri_tank5 "ASM1 nitrification tank"
 
   // aeration system dependent parameters
   //parameter Real alpha=0.7 "Oxygen transfer factor";
-  parameter Real KLa=84 "Oxygen transfer coeff per day";
+  Real KLa "Oxygen transfer coeff per day";
   parameter Modelica.SIunits.Length de=4.5 "depth of aeration";
   parameter Real R_air=23.5 "specific oxygen feed factor [gO2/(m^3*m)]";
   parameter WWU.MassConcentration So_sat = 8.0 "Dissolved oxygen saturation";
@@ -6250,6 +6246,7 @@ equation
   //aeration = (alpha*(So_sat - So)/So_sat*AirIn.Q_air*R_air*de)/V;
   //aeration = (inputSo*In.Q + R_air*V + KLa*V*(So_sat - So) - Out.Q*So)/V;
   //aeration = (inputSo*In.Q + R_air*V - Out.Q*So)/V;
+  So=2;
   aeration = KLa * (So_sat - So);
   //aeration = KLa * (So_sat - So);
 

@@ -429,6 +429,7 @@ equation
   Out.Salk =data[14];
 
   /*
+
   Out.Q =-18446;
   Out.Si =30.0;
   Out.Ss =69.50;
@@ -443,7 +444,8 @@ equation
   Out.Snd =6.95;
   Out.Xnd =10.59;
   Out.Salk =7.0;
-*/
+  */
+
   annotation (
     Documentation(info="This component provides all ASM1 data at the influent of a wastewater treatment plant.
 The dimension of InPort is 14.
@@ -1072,8 +1074,6 @@ Main Author:
         annotation (Placement(transformation(extent={{-104,22},{-84,42}})));
       WasteWater.Assignment2a.sensor_NO sensor_NO
         annotation (Placement(transformation(extent={{-42,48},{-22,68}})));
-      WasteWater.Assignment2a.sensor_O2 sensor_O2
-        annotation (Placement(transformation(extent={{1,25},{18,42}})));
       Modelica.Blocks.Sources.Constant Constant1(k=55338)
                                                  annotation (Placement(
             transformation(extent={{-93,-56},{-73,-36}})));
@@ -1160,8 +1160,6 @@ Main Author:
         annotation (Line(points={{43,-58},{46,-58},{46,-28.5},{34.9,-28.5}},
                                                                          color={0,
               0,255}));
-      connect(tank5.MeasurePort, sensor_O2.In) annotation (Line(points={{9.5,8.5},{9.5,
-              25},{9.5,25}}));
       connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,15},{40,6.6}}));
 
       connect(RecyclePump.u, Constant1.y) annotation (Line(

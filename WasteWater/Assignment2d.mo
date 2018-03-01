@@ -1,5 +1,5 @@
 within WasteWater;
-package Assignment2b "Component models for the Activated Sludge Model No.1"
+package Assignment2d "Component models for the Activated Sludge Model No.1"
 extends Modelica.Icons.Library;
 
 model deni "ASM1 denitrification tank"
@@ -130,7 +130,7 @@ model SecClarModTakacs "Secondary Clarifier ASM1 Model based on Takacs"
   extends SecClar.Takacs.Interfaces.ratios;
   package SCP = SecClar.Takacs;
   import SI = Modelica.SIunits;
-  package WI = WasteWater.Assignment2b.Interfaces;
+  package WI = WasteWater.Assignment2d.Interfaces;
   package WWU = WasteWater.WasteWaterUnits;
   parameter SI.Length hsc=4.0 "height of secondary clarifier";
   parameter Integer n=10 "number of layers of SC model";
@@ -728,8 +728,8 @@ model sensor_O2 "Ideal sensor to measure dissolved oxygen concentration"
             -110},{10,-90}})));
   Modelica.Blocks.Interfaces.RealOutput So annotation (Placement(transformation(
           extent={{88,-10},{108,10}})));
-equation
 
+equation
   In.Q = 0;
   So = In.So;
 
@@ -1053,55 +1053,57 @@ Main Author:
       extends Modelica.Icons.Example;
 
       WasteWater.Assignment2a.EffluentSink Effluent
-        annotation (Placement(transformation(extent={{88,-28},{108,-8}})));
+        annotation (Placement(transformation(extent={{96,-45},{116,-25}})));
       WasteWater.Assignment2a.SludgeSink WasteSludge
-        annotation (Placement(transformation(extent={{87,-51},{107,-31}})));
+        annotation (Placement(transformation(extent={{87,-71},{107,-51}})));
       WasteWater.Assignment2a.SecClarModTakacs Settler
-        annotation (Placement(transformation(extent={{48,-5},{68,15}})));
+        annotation (Placement(transformation(extent={{48,-25},{68,-5}})));
       WasteWater.Assignment2a.divider2 divider
-        annotation (Placement(transformation(extent={{20,-6},{40,14}})));
-      WasteWater.Assignment2a.nitri_tank5 tank5(V=1333)
-        annotation (Placement(transformation(extent={{-6,-6},{14,14}})));
-      WasteWater.Assignment2a.nitri tank4(V=1333)
-        annotation (Placement(transformation(extent={{-32,-6},{-12,14}})));
-      WasteWater.Assignment2a.nitri tank3(V=1333)
-        annotation (Placement(transformation(extent={{-60,-6},{-40,14}})));
+        annotation (Placement(transformation(extent={{20,-26},{40,-6}})));
+      WasteWater.Assignment2d.nitri_tank5 tank5(V=1333)
+        annotation (Placement(transformation(extent={{-6,-26},{14,-6}})));
+      WasteWater.Assignment2d.nitri_34
+                                    tank4(V=1333)
+        annotation (Placement(transformation(extent={{-32,-26},{-12,-6}})));
+      WasteWater.Assignment2d.nitri_34
+                                    tank3(V=1333)
+        annotation (Placement(transformation(extent={{-60,-26},{-40,-6}})));
       WasteWater.Assignment2a.deni tank2
-        annotation (Placement(transformation(extent={{-48,22},{-28,42}})));
+        annotation (Placement(transformation(extent={{-48,2},{-28,22}})));
       WasteWater.Assignment2a.deni tank1
-        annotation (Placement(transformation(extent={{-76,22},{-56,42}})));
+        annotation (Placement(transformation(extent={{-76,2},{-56,22}})));
       WasteWater.Assignment2a.mixer3 mixer
-        annotation (Placement(transformation(extent={{-104,22},{-84,42}})));
+        annotation (Placement(transformation(extent={{-104,2},{-84,22}})));
       WasteWater.Assignment2a.sensor_NO sensor_NO
-        annotation (Placement(transformation(extent={{-42,48},{-22,68}})));
+        annotation (Placement(transformation(extent={{-42,28},{-22,48}})));
       Modelica.Blocks.Sources.Constant Constant1(k=55338)
                                                  annotation (Placement(
-            transformation(extent={{-93,-56},{-73,-36}})));
+            transformation(extent={{-93,-76},{-73,-56}})));
       WasteWater.Assignment2a.pump RecyclePump(Q_max=55338) annotation (
           Placement(transformation(
-            origin={-84,-12},
+            origin={-84,-32},
             extent={{-10,-10},{10,10}},
             rotation=180)));
       WasteWater.Assignment2a.pump ReturnPump(Q_max=18446) annotation (
           Placement(transformation(
-            origin={26,-26},
+            origin={26,-46},
             extent={{-10,-10},{10,10}},
             rotation=180)));
       WasteWater.Assignment2a.pump WastePump(Q_max=385)
-        annotation (Placement(transformation(extent={{59,-55},{79,-35}})));
+        annotation (Placement(transformation(extent={{59,-75},{79,-55}})));
 
       Modelica.Blocks.Sources.Constant Constant2 annotation (Placement(
-            transformation(extent={{22,-68},{42,-48}})));
-      sensor_NH sensor_NH1 annotation (Placement(transformation(extent={{64,15},{
-                80,31}})));
+            transformation(extent={{22,-88},{42,-68}})));
+      sensor_NH sensor_NH1 annotation (Placement(transformation(extent={{64,-5},
+                {80,11}})));
       WasteWater.ASM1.sensor_NO sensor_NO1 annotation (Placement(transformation(
-              extent={{81,15},{97,31}})));
+              extent={{81,-5},{97,11}})));
       WasteWater.ASM1.sensor_TKN sensor_TKN1 annotation (Placement(transformation(
-              extent={{97,14},{113,30}})));
+              extent={{97,-6},{113,10}})));
       WasteWater.ASM1.sensor_COD sensor_COD1 annotation (Placement(transformation(
-              extent={{97,-5},{113,11}})));
+              extent={{97,-25},{113,-9}})));
       WasteWater.ASM1.sensor_TSS sensor_TSS1 annotation (Placement(transformation(
-              extent={{32,15},{48,30}})));
+              extent={{32,-5},{48,10}})));
       Modelica.Blocks.Sources.CombiTimeTable CombiTableTime(
         fileName=Modelica.Utilities.Files.loadResource("modelica://WasteWater/Resources/ASM1/Inf_dry.txt"),
         table=[0,0; 1,1],
@@ -1115,86 +1117,105 @@ Main Author:
         annotation (Placement(transformation(extent={{-86,76},{-66,96}})));
       Modelica.Blocks.Sources.Constant Constant3(k=15)
                                                  annotation (Placement(
-            transformation(extent={{-32,75},{-12,95}})));
+            transformation(extent={{-16,75},{4,95}})));
+      WasteWater.Assignment2d.AE AE
+        annotation (Placement(transformation(extent={{-16,12},{4,32}})));
+      WasteWater.Assignment2d.EQ eQ
+        annotation (Placement(transformation(extent={{68,23},{88,43}})));
     equation
-      connect(divider.Out1, Settler.Feed) annotation (Line(points={{40,6.6},{44,6.6},
-              {44,6.4},{48,6.4}}));
-      connect(tank5.Out, divider.In) annotation (Line(points={{14,4},{17,4},{17,4.3},
-              {20,4.3}}));
-      connect(tank4.Out, tank5.In) annotation (Line(points={{-12,4},{-6,4}}));
-      connect(tank3.Out, tank4.In) annotation (Line(points={{-40,4},{-32,4}}));
-      connect(tank3.In, tank2.Out) annotation (Line(points={{-60,4},{-70,4},{-70,
-              18},{-18,18},{-18,32},{-28,32}}));
-      connect(tank1.Out, tank2.In) annotation (Line(points={{-56,32},{-48,32}}));
-      connect(mixer.Out, tank1.In) annotation (Line(points={{-84,31.6},{-80,31.6},{-80,
-              32},{-76,32}}));
-      connect(sensor_NO.In, tank2.MeasurePort) annotation (Line(points={{-32,48},
-              {-32,36.5},{-32.5,36.5}}));
-      connect(divider.Out2, RecyclePump.In) annotation (Line(points={{40,2.5},{44,2.5},
-              {44,-8.7},{-74,-8.7}}));
-      connect(RecyclePump.Out, mixer.In3) annotation (Line(points={{-94,-14.8},{-104,
-              -14.8},{-104,27.5}}));
-      connect(Settler.Return, ReturnPump.In) annotation (Line(points={{55,-4.6},{
-              55,-22.7},{36,-22.7}}));
-      connect(ReturnPump.Out, mixer.In2) annotation (Line(points={{16,-28.8},{15.5,-28.8},
-              {15.5,-29},{-112,-29},{-112,31.5},{-104,31.5}}));
-      connect(WastePump.Out, WasteSludge.In) annotation (Line(points={{79,-42.2},{81,
-              -42.2},{81,-42},{83,-42},{83,-42.2},{87,-42.2}}));
-      connect(WastePump.In, Settler.Waste) annotation (Line(points={{59,-48.3},{52,-48.3},
-              {52,-31},{61,-31},{61,-4.6}}));
+      connect(divider.Out1, Settler.Feed) annotation (Line(points={{40,-13.4},{
+              44,-13.4},{44,-13.6},{48,-13.6}}));
+      connect(tank5.Out, divider.In) annotation (Line(points={{14,-16},{17,-16},
+              {17,-15.7},{20,-15.7}}));
+      connect(tank4.Out, tank5.In) annotation (Line(points={{-12,-16},{-6,-16}}));
+      connect(tank3.Out, tank4.In) annotation (Line(points={{-40,-16},{-32,-16}}));
+      connect(tank3.In, tank2.Out) annotation (Line(points={{-60,-16},{-71,-16},
+              {-71,-2},{-19,-2},{-19,12},{-28,12}}));
+      connect(tank1.Out, tank2.In) annotation (Line(points={{-56,12},{-48,12}}));
+      connect(mixer.Out, tank1.In) annotation (Line(points={{-84,11.6},{-80,
+              11.6},{-80,12},{-76,12}}));
+      connect(sensor_NO.In, tank2.MeasurePort) annotation (Line(points={{-32,28},
+              {-32,16.5},{-32.5,16.5}}));
+      connect(divider.Out2, RecyclePump.In) annotation (Line(points={{40,-17.5},
+              {44,-17.5},{44,-28.7},{-74,-28.7}}));
+      connect(RecyclePump.Out, mixer.In3) annotation (Line(points={{-94,-34.8},
+              {-104,-34.8},{-104,7.5}}));
+      connect(Settler.Return, ReturnPump.In) annotation (Line(points={{55,-24.6},
+              {55,-42.7},{36,-42.7}}));
+      connect(ReturnPump.Out, mixer.In2) annotation (Line(points={{16,-48.8},{
+              15.5,-48.8},{15.5,-49},{-112,-49},{-112,11.5},{-104,11.5}}));
+      connect(WastePump.Out, WasteSludge.In) annotation (Line(points={{79,-62.2},
+              {81,-62.2},{81,-62},{83,-62},{83,-62.2},{87,-62.2}}));
+      connect(WastePump.In, Settler.Waste) annotation (Line(points={{59,-68.3},
+              {52,-68.3},{52,-51},{61,-51},{61,-24.6}}));
       connect(WastePump.u, Constant2.y)
-        annotation (Line(points={{60.1,-42.5},{46,-42.5},{46,-58},{43,-58}},
+        annotation (Line(points={{60.1,-62.5},{46,-62.5},{46,-78},{43,-78}},
                                                                        color={0,0,
               255}));
-      connect(sensor_NH1.In, Settler.Effluent) annotation (Line(points={{72,15},{72,
-              10.7},{68.2,10.7}}));
-      connect(sensor_NO1.In, Settler.Effluent) annotation (Line(points={{89,15},{89,
-              10.7},{68.2,10.7}}));
-      connect(sensor_TKN1.In, Settler.Effluent) annotation (Line(points={{105,14},{105,
-              10.7},{68.2,10.7}}));
-      connect(sensor_COD1.In, Settler.Effluent) annotation (Line(points={{105,-5},{105,
-              10.7},{68.2,10.7}}));
-      connect(Effluent.In, Settler.Effluent) annotation (Line(points={{88,-16},{78.5,
-              -16},{78.5,10.7},{68.2,10.7}}));
+      connect(sensor_NH1.In, Settler.Effluent) annotation (Line(points={{72,-5},
+              {72,-9.3},{68.2,-9.3}}));
+      connect(sensor_NO1.In, Settler.Effluent) annotation (Line(points={{89,-5},
+              {89,-9.3},{68.2,-9.3}}));
+      connect(sensor_TKN1.In, Settler.Effluent) annotation (Line(points={{105,-6},
+              {105,-9.3},{68.2,-9.3}}));
+      connect(sensor_COD1.In, Settler.Effluent) annotation (Line(points={{105,-25},
+              {105,-9.3},{68.2,-9.3}}));
+      connect(Effluent.In, Settler.Effluent) annotation (Line(points={{96,-33},
+              {76.5,-33},{76.5,-9.3},{68.2,-9.3}}));
       connect(Constant2.y, ReturnPump.u)
-        annotation (Line(points={{43,-58},{46,-58},{46,-28.5},{34.9,-28.5}},
+        annotation (Line(points={{43,-78},{46,-78},{46,-48.5},{34.9,-48.5}},
                                                                          color={0,
               0,255}));
-      connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,15},{40,6.6}}));
+      connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,-5},{
+              40,-13.4}}));
 
       connect(RecyclePump.u, Constant1.y) annotation (Line(
-          points={{-75.1,-14.5},{-65,-14.5},{-65,-46},{-72,-46}},
+          points={{-75.1,-34.5},{-65,-34.5},{-65,-66},{-72,-66}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(mixer.In1,WWSource. Out) annotation (Line(points={{-104,35.5},{-104,46},
-              {-104,57},{-66,57},{-66,79},{-66.2,79}}));
+      connect(mixer.In1,WWSource. Out) annotation (Line(points={{-104,15.5},{
+              -104,37},{-66,37},{-66,79},{-66.2,79}}));
       connect(CombiTableTime.y,WWSource. data)
         annotation (Line(points={{-91,86},{-85,86}}));
       connect(tank1.T, Constant3.y) annotation (Line(
-          points={{-76,36},{-77,36},{-77,46},{-56,46},{-56,85},{-11,85}},
+          points={{-76,16},{-77,16},{-77,26},{-56,26},{-56,85},{5,85}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(tank2.T, tank1.T) annotation (Line(
-          points={{-48,36},{-76,36}},
+          points={{-48,16},{-76,16}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(tank2.T, tank3.T) annotation (Line(
-          points={{-48,36},{-54,36},{-54,8},{-60,8}},
+          points={{-48,16},{-54,16},{-54,-12},{-60,-12}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(tank4.T, tank3.T) annotation (Line(
-          points={{-32,8},{-60,8}},
+          points={{-32,-12},{-60,-12}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(tank5.T, tank4.T) annotation (Line(
-          points={{-6,8},{-32,8}},
+          points={{-6,-12},{-32,-12}},
           color={0,0,127},
           smooth=Smooth.None));
+      connect(AE.KLa4, tank3.KLaOut) annotation (Line(
+          points={{-11,13},{-24,13},{-24,-7.8},{-42.2,-7.8}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(AE.KLa3, tank4.KLaOut) annotation (Line(
+          points={{-6,13},{-8,13},{-8,-7.8},{-14.2,-7.8}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(AE.KLa5, tank5.KLaOut) annotation (Line(
+          points={{-1,13},{-1,-8.4},{11.8,-8.4}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(eQ.In, Effluent.In) annotation (Line(points={{78,23},{83,23},{83,
+              -33},{96,-33}}, color={0,0,255}));
       annotation (
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
             extent={{-120,-100},{120,105}},
-            grid={1,1}), graphics),
+            grid={1,1})),
         Documentation(info="This ASM1 plant consists of 2 denitrification tanks (tank1 and tank2),
 3 nitrification tanks (tank3 - tank5) and a secondary clarifier by Takacs.
 Furthermore there are 2 control loops modelled.
@@ -2145,11 +2166,11 @@ Copyright (C) 2000 - 2001, Gerald Reichl
       Real CODout;
       Real XCODin;
       Real H;
-      Assignment2b.Interfaces.WWFlowAsm1in In
+      Assignment2d.Interfaces.WWFlowAsm1in In
         annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-      Assignment2b.Interfaces.WWFlowAsm1out Out
+      Assignment2d.Interfaces.WWFlowAsm1out Out
         annotation (Placement(transformation(extent={{90,-10},{110,10}})));
-      Assignment2b.Interfaces.WWFlowAsm1out MeasurePort
+      Assignment2d.Interfaces.WWFlowAsm1out MeasurePort
         annotation (Placement(transformation(extent={{32,90},{42,100}})));
     equation
 
@@ -2272,11 +2293,11 @@ Parameter:
       Real CODout;
       Real XCODin;
       Real H;
-      Assignment2b.Interfaces.WWFlowAsm1in In
+      Assignment2d.Interfaces.WWFlowAsm1in In
         annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-      Assignment2b.Interfaces.WWFlowAsm1out Out
+      Assignment2d.Interfaces.WWFlowAsm1out Out
         annotation (Placement(transformation(extent={{90,-10},{110,10}})));
-      Assignment2b.Interfaces.WWFlowAsm1out MeasurePort
+      Assignment2d.Interfaces.WWFlowAsm1out MeasurePort
         annotation (Placement(transformation(extent={{32,90},{42,100}})));
     equation
 
@@ -2420,9 +2441,9 @@ Parameter:
       Real CODout;
       Real XCOD;
       Real H;
-      Assignment2b.Interfaces.WWFlowAsm1in In
+      Assignment2d.Interfaces.WWFlowAsm1in In
         annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-      Assignment2b.Interfaces.WWFlowAsm1out Out
+      Assignment2d.Interfaces.WWFlowAsm1out Out
         annotation (Placement(transformation(extent={{90,-10},{110,10}})));
       Modelica.Blocks.Interfaces.RealInput MeasurePort[4]
         annotation (Placement(transformation(
@@ -2907,14 +2928,14 @@ Parameters:
       end SecClarModHaertel;
 
       model bottom_layer "Bottom layer of Haertel`s SC model"
-        import WWSC = WasteWater.Assignment2b.SecClar.Haertel.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Haertel.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         extends WWSC.ratios;
 
-        Assignment2b.Interfaces.WWFlowAsm1out PQr
+        Assignment2d.Interfaces.WWFlowAsm1out PQr
           annotation (Placement(transformation(extent={{-70,-110},{-50,-90}})));
-        Assignment2b.Interfaces.WWFlowAsm1out PQw
+        Assignment2d.Interfaces.WWFlowAsm1out PQw
           annotation (Placement(transformation(extent={{40,-110},{60,-90}})));
         WWSC.LowerLayerPin Up annotation (Placement(transformation(extent={{-10,90},
                   {10,110}})));
@@ -3040,7 +3061,7 @@ From here return and waste sludge is removed.
 
       model lower_layer "Layer below influent of Haertel`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Haertel.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Haertel.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         WWU.MassConcentration Xf "sludge concentration in clarifier feed";
@@ -3173,7 +3194,7 @@ function and the omega correction function by Haertel.
       end lower_layer;
 
       model feed_layer "Influent layer of Haertel`s SC model"
-        import WWSC = WasteWater.Assignment2b.SecClar.Haertel.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Haertel.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
 
@@ -3188,7 +3209,7 @@ function and the omega correction function by Haertel.
                   -110},{10,-90}})));
         WWSC.UpperLayerPin Up annotation (Placement(transformation(extent={{-10,90},
                   {10,110}})));
-        Assignment2b.Interfaces.WWFlowAsm1in In
+        Assignment2d.Interfaces.WWFlowAsm1in In
           annotation (Placement(transformation(extent={{-110,-6},{-90,14}})));
       equation
 
@@ -3319,7 +3340,7 @@ function and the omega correction function by Haertel.
 
       model upper_layer "Layer above influent of Haertels`s SC"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Haertel.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Haertel.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         WWSC.UpperLayerPin Dn annotation (Placement(transformation(extent={{-10,
@@ -3442,13 +3463,13 @@ function by Haertel."),
 
       model top_layer "Effluent layer of Haertel`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Haertel.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Haertel.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         extends WWSC.ratios;
         WWSC.UpperLayerPin Dn annotation (Placement(transformation(extent={{-10,
                   -110},{10,-90}})));
-        Assignment2b.Interfaces.WWFlowAsm1out Out
+        Assignment2d.Interfaces.WWFlowAsm1out Out
           annotation (Placement(transformation(extent={{90,-10},{110,10}})));
       equation
 
@@ -3666,12 +3687,12 @@ Copyright (C) 2003, Gerald Reichl
       model SecClarModKrebs "ASM1 Secondary Settling Tank Model based on Krebs"
 
         extends WasteWater.Icons.SecClarKrebs;
-        import WWSC = WasteWater.Assignment2b.SecClar.Krebs.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Krebs.Interfaces;
         extends WWSC.SCVar;
         extends WWSC.ratios;
 
         import SI = Modelica.SIunits;
-        package WI = WasteWater.Assignment2b.Interfaces;
+        package WI = WasteWater.Assignment2d.Interfaces;
         package WWU = WasteWater.WasteWaterUnits;
         parameter SI.Length hsc=4.0 "height of secondary clarifier";
         parameter SI.Area Asc=1500.0 "area of secondary clarifier";
@@ -4238,13 +4259,13 @@ Parameters:
 
       model bottom_layer "Bottom layer of Otterpohls`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Otterpohl.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Otterpohl.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         extends WWSC.ratios;
-        Assignment2b.Interfaces.WWFlowAsm1out PQr
+        Assignment2d.Interfaces.WWFlowAsm1out PQr
           annotation (Placement(transformation(extent={{-70,-110},{-50,-90}})));
-        Assignment2b.Interfaces.WWFlowAsm1out PQw
+        Assignment2d.Interfaces.WWFlowAsm1out PQw
           annotation (Placement(transformation(extent={{40,-110},{60,-90}})));
         WWSC.LowerLayerPin Up annotation (Placement(transformation(extent={{-10,90},
                   {10,110}})));
@@ -4375,7 +4396,7 @@ From here return and waste sludge is removed.
 
       model lower_layer "Layer below influent of Otterpohl`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Otterpohl.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Otterpohl.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         WWU.MassConcentration Xf "sludge concentration in clarifier feed";
@@ -4514,7 +4535,7 @@ Sedimentation flux is calculated based on two sedimentation velocities
 
       model feed_layer "Influent layer of Otterpohl`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Otterpohl.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Otterpohl.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         WWU.MassConcentration Xf "sludge concentration in clarifier feed";
@@ -4528,7 +4549,7 @@ Sedimentation flux is calculated based on two sedimentation velocities
                   -110},{10,-90}})));
         WWSC.UpperLayerPin Up annotation (Placement(transformation(extent={{-10,90},
                   {10,110}})));
-        Assignment2b.Interfaces.WWFlowAsm1in In
+        Assignment2d.Interfaces.WWFlowAsm1in In
           annotation (Placement(transformation(extent={{-110,-6},{-90,14}})));
       equation
 
@@ -4668,7 +4689,7 @@ Sedimentation flux is calculated based on two sedimentation velocities
 
       model upper_layer "Layer above influent of Otterpohl`s SC"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Otterpohl.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Otterpohl.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         WWSC.UpperLayerPin Dn annotation (Placement(transformation(extent={{-10,
@@ -4797,13 +4818,13 @@ Sedimentation flux is calculated based on two sedimentation velocities
 
       model top_layer "Effluent layer of Otterpohl`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Otterpohl.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Otterpohl.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         extends WWSC.ratios;
         WWSC.UpperLayerPin Dn annotation (Placement(transformation(extent={{-10,
                   -110},{10,-90}})));
-        Assignment2b.Interfaces.WWFlowAsm1out Out
+        Assignment2d.Interfaces.WWFlowAsm1out Out
           annotation (Placement(transformation(extent={{90,-10},{110,10}})));
       equation
 
@@ -4951,9 +4972,9 @@ Copyright (C) 2003, Gerald Reichl
       model SimpleSecClarMod "Simple ASM1 Secondary Clarifier Model"
 
         extends WasteWater.Icons.SecClarSimple;
-        extends WasteWater.Assignment2b.SecClar.Takacs.Interfaces.ratios;
+        extends WasteWater.Assignment2d.SecClar.Takacs.Interfaces.ratios;
         import SI = Modelica.SIunits;
-        package WI = WasteWater.Assignment2b.Interfaces;
+        package WI = WasteWater.Assignment2d.Interfaces;
         package WWU = WasteWater.WasteWaterUnits;
 
         parameter SI.Length hsc=4.0 "height of secondary clarifier";
@@ -5372,7 +5393,7 @@ Copyright (C) 2000 - 2001, Gerald Reichl
         extends Interfaces.ratios;
         package SCP = Takacs;
         import SI = Modelica.SIunits;
-        package WI = WasteWater.Assignment2b.Interfaces;
+        package WI = WasteWater.Assignment2d.Interfaces;
         package WWU = WasteWater.WasteWaterUnits;
 
         parameter SI.Length hsc=4.0 "height of secondary clarifier";
@@ -5505,13 +5526,13 @@ Parameters:
 
       model bottom_layer "Bottom layer of Takac`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Takacs.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Takacs.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         extends WWSC.ratios;
-        Assignment2b.Interfaces.WWFlowAsm1out PQr
+        Assignment2d.Interfaces.WWFlowAsm1out PQr
           annotation (Placement(transformation(extent={{-70,-110},{-50,-90}})));
-        Assignment2b.Interfaces.WWFlowAsm1out PQw
+        Assignment2d.Interfaces.WWFlowAsm1out PQw
           annotation (Placement(transformation(extent={{40,-110},{60,-90}})));
         WWSC.LowerLayerPin Up annotation (Placement(transformation(extent={{-10,90},
                   {10,110}})));
@@ -5635,7 +5656,7 @@ From here return and waste sludge is removed.
 
       model lower_layer "Layer below influent of Takac`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Takacs.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Takacs.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         WWSC.LowerLayerPin Up annotation (Placement(transformation(extent={{-10,90},
@@ -5760,14 +5781,14 @@ function by Takacs."),
 
       model feed_layer "Influent layer of Takac`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Takacs.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Takacs.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         WWSC.LowerLayerPin Dn annotation (Placement(transformation(extent={{-10,
                   -110},{10,-90}})));
         WWSC.UpperLayerPin Up annotation (Placement(transformation(extent={{-10,90},
                   {10,110}})));
-        Assignment2b.Interfaces.WWFlowAsm1in In
+        Assignment2d.Interfaces.WWFlowAsm1in In
           annotation (Placement(transformation(extent={{-110,-6},{-90,14}})));
       equation
 
@@ -5897,7 +5918,7 @@ function by Takacs."),
       model upper_layer "Layer above influent of Takac`s SC"
         // Xt = Xthreshold
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Takacs.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Takacs.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         parameter WWU.MassConcentration Xt;
@@ -6022,7 +6043,7 @@ function by Takacs."),
 
       model top_layer "Effluent layer of Takac`s SC model"
 
-        import WWSC = WasteWater.Assignment2b.SecClar.Takacs.Interfaces;
+        import WWSC = WasteWater.Assignment2d.SecClar.Takacs.Interfaces;
         extends WWSC.SCParam;
         extends WWSC.SCVar;
         extends WWSC.ratios;
@@ -6032,7 +6053,7 @@ function by Takacs."),
 
         WWSC.UpperLayerPin Dn annotation (Placement(transformation(extent={{-10,
                   -110},{10,-90}})));
-        Assignment2b.Interfaces.WWFlowAsm1out Out
+        Assignment2d.Interfaces.WWFlowAsm1out Out
           annotation (Placement(transformation(extent={{90,-10},{110,10}})));
       equation
 
@@ -6237,10 +6258,14 @@ model nitri_tank5 "ASM1 nitrification tank"
           extent={{50,40},{60,50}})));
   Modelica.Blocks.Interfaces.RealInput T annotation (Placement(transformation(
           extent={{-110,30},{-90,50}})));
+
+  Modelica.Blocks.Interfaces.RealOutput KLaOut annotation (Placement(transformation(
+          extent={{68,66},{88,86}})));
+
   Interfaces.AirFlow AirIn annotation (Placement(transformation(extent={{-5,
             -103},{5,-93}})));
-equation
 
+equation
   // Temperature dependent oxygen saturation by Simba
   //So_sat = 13.89 + (-0.3825 + (0.007311 - 0.00006588*T)*T)*T;
   // extends the Oxygen differential equation by an aeration term
@@ -6250,9 +6275,9 @@ equation
   //aeration = (inputSo*In.Q + R_air*V + KLa*V*(So_sat - So) - Out.Q*So)/V;
   //aeration = (inputSo*In.Q + R_air*V - Out.Q*So)/V;
   aeration = KLa * (So_sat - So);
-  //aeration = KLa * (So_sat - So);
 
   // volume dependent dilution term of each concentration
+  KLaOut = KLa;
 
   inputSi = (In.Si - Si)*In.Q/V;
   inputSs = (In.Ss - Ss)*In.Q/V;
@@ -6281,8 +6306,410 @@ Parameters:
   alpha - oxygen transfer factor
   de    - depth of the aeration system [m]
   R_air - specific oxygen feed factor [g O2/(m3*m)]
-"));
+"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{
+              100,100}}),
+                    graphics));
 end nitri_tank5;
+
+model AE "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+
+  Modelica.Blocks.Interfaces.RealOutput AE(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+  Modelica.Blocks.Interfaces.RealInput KLa3 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={0,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa4 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={-50,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa5 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={50,-90})));
+
+  Real T(start=1e-3);
+
+equation
+  der(T) = 1.0;
+  der(AE*T) = 2/(1.8*1000)*1333*(KLa3 + KLa4 + KLa5);
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end AE;
+
+model nitri_34 "ASM1 nitrification tank"
+  // nitrification (aerated) tank, based on the ASM1 model
+
+  extends WasteWater.Icons.nitri;
+  extends Interfaces.ASM1base;
+
+  // tank specific parameters
+  parameter Modelica.SIunits.Volume V=1333 "Volume of nitrification tank";
+
+  // aeration system dependent parameters
+  //parameter Real alpha=0.7 "Oxygen transfer factor";
+  parameter Real KLa=240 "Oxygen transfer coeff per day";
+  parameter Modelica.SIunits.Length de=4.5 "depth of aeration";
+  parameter Real R_air=23.5 "specific oxygen feed factor [gO2/(m^3*m)]";
+  parameter WWU.MassConcentration So_sat = 8.0 "Dissolved oxygen saturation";
+
+  Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-110,
+            -10},{-90,10}})));
+  Interfaces.WWFlowAsm1out Out annotation (Placement(transformation(extent={{90,
+            -10},{110,10}})));
+  Interfaces.WWFlowAsm1out MeasurePort annotation (Placement(transformation(
+          extent={{50,40},{60,50}})));
+
+  Interfaces.AirFlow AirIn annotation (Placement(transformation(extent={{-5,
+            -103},{5,-93}})));
+
+  Modelica.Blocks.Interfaces.RealOutput KLaOut
+                                         annotation (Placement(transformation(
+          extent={{68,72},{88,92}})));
+equation
+  // Temperature dependent oxygen saturation by Simba
+  //So_sat = 13.89 + (-0.3825 + (0.007311 - 0.00006588*T)*T)*T;
+  // extends the Oxygen differential equation by an aeration term
+  // aeration [mgO2/l]; AirIn.Q_air needs to be in
+  // Simulationtimeunit [m3*day^-1]
+  //aeration = (alpha*(So_sat - So)/So_sat*AirIn.Q_air*R_air*de)/V;
+  //aeration = (inputSo*In.Q + R_air*V + KLa*V*(So_sat - So) - Out.Q*So)/V;
+  //aeration = (inputSo*In.Q + R_air*V - Out.Q*So)/V;
+  aeration = KLa * (So_sat - So);
+
+  //aeration = KLa * (So_sat - So);
+
+  // volume dependent dilution term of each concentration
+  KLaOut = KLa;
+
+  inputSi = (In.Si - Si)*In.Q/V;
+  inputSs = (In.Ss - Ss)*In.Q/V;
+  inputXi = (In.Xi - Xi)*In.Q/V;
+  inputXs = (In.Xs - Xs)*In.Q/V;
+  inputXbh = (In.Xbh - Xbh)*In.Q/V;
+  inputXba = (In.Xba - Xba)*In.Q/V;
+  inputXp = (In.Xp - Xp)*In.Q/V;
+  inputSo = (In.So - So)*In.Q/V;
+  inputSno = (In.Sno - Sno)*In.Q/V;
+  inputSnh = (In.Snh - Snh)*In.Q/V;
+  inputSnd = (In.Snd - Snd)*In.Q/V;
+  inputXnd = (In.Xnd - Xnd)*In.Q/V;
+  inputSalk = (In.Salk - Salk)*In.Q/V;
+
+  /*connect(KLa, KLa) annotation (Line(
+      points={{88,72},{88,72}},
+      color={0,0,127},
+      smooth=Smooth.None));
+  */
+  annotation (
+    Documentation(info="This component models the ASM1 processes and reactions taking place in an aerated (nitrification) tank
+of a wastewater treatment plant.
+
+The InPort signal gives the tank temperature to the model.
+
+Parameters:
+
+        - all soichiometric and kinetic parameters of the activated sludge model No.1 (ASM1)
+  V     - volume of the tank [m3]
+  alpha - oxygen transfer factor
+  de    - depth of the aeration system [m]
+  R_air - specific oxygen feed factor [g O2/(m3*m)]
+"), Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+            100}}), graphics));
+end nitri_34;
+
+model EQ "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+/*
+  constant Real B_SS = 2;
+  constant Real B_COD = 1;
+  constant Real B_Nkj = 30;
+  constant Real B_NO = 10;
+  constant Real B_BOD5 = 2;
+  constant Real ixb = 0.08;
+  constant Real ixp = 0.06;
+  */
+  Real S_Nkje;
+  Real SSe;
+  Real BOD_5e;
+  Real COD_e;
+
+  Modelica.Blocks.Interfaces.RealOutput EQ( start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+  Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-10,
+            -110},{10,-90}})));
+  Real T(start=1e-3);
+
+equation
+
+  S_Nkje = In.Snh + In.Snd + In.Xnd + 0.08 * ( In.Xbh + In.Xba) + 0.06 * ( In.Xp + In.Xi);
+  SSe = 0.75 * (In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp);
+  BOD_5e = 0.25 * ( In.Ss + In.Xi + In.Xbh + In.Xba + In.Xp);
+  COD_e = In.Ss + In.Si + In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp;
+
+  der(T) = 1.0;
+  der(EQ*T) = 1/1000*(2*SSe + 1*COD_e + 30*S_Nkje +  10*In.Sno + 2*BOD_5e)*In.Q;
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end EQ;
+
+model ME "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+
+  Modelica.Blocks.Interfaces.RealOutput ME(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+  Modelica.Blocks.Interfaces.RealInput KLa3 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={0,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa4 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={-50,-90})));
+  Modelica.Blocks.Interfaces.RealInput KLa5 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={50,-90})));
+
+  Real dummy3=0;
+
+  Real T(start=1e-3);
+
+equation
+  der(T) = 1.0;
+
+  if KLa3 < 20 then
+    dummy3 = 1333*0.005*KLa3;
+  end if;
+
+  if KLa < 20 then
+    der(ME*T) = 2/(1.8*1000)*1333*(KLa3 + KLa4 + KLa5);
+  else
+    der(ME*T) = 0;
+  end if;
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end ME;
+
+model IQ "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+/*
+  constant Real B_SS = 2;
+  constant Real B_COD = 1;
+  constant Real B_Nkj = 30;
+  constant Real B_NO = 10;
+  constant Real B_BOD5 = 2;
+  constant Real ixb = 0.08;
+  constant Real ixp = 0.06;
+  */
+  Real S_Nkje;
+  Real SSe;
+  Real BOD_5e;
+  Real COD_e;
+
+  Modelica.Blocks.Interfaces.RealOutput IQ(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+  Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-10,
+            -110},{10,-90}})));
+  Real T(start=1e-3);
+
+equation
+
+  S_Nkje = In.Snh + In.Snd + In.Xnd + 0.08 * ( In.Xbh + In.Xba) + 0.06 * ( In.Xp + In.Xi);
+  SSe = 0.75 * (In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp);
+  /*BOD_5e = 0.65 * ( In.Ss + In.Xs + (1-0.08)*          (In.Xbh + In.Xba) ;*/
+                                          /*    feil her */
+
+  COD_e = In.Ss + In.Si + In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp;
+
+  der(T) = 1.0;
+  der(IQ*T) = 1/1000*(2*SSe + 1*COD_e + 30*S_Nkje +  10*In.Sno + 2*BOD_5e)*In.Q;
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end IQ;
 annotation (
   Documentation(info="This library contains components to build models of biological municipal
 wastewater treatment plants based on the Activated Sludge Model No.1 (ASM1) by the
@@ -6321,4 +6748,4 @@ disclaimer in the documentation of package Modelica in file \"Modelica/package.m
 
 Copyright (C) 2000 - 2002, Gerald Reichl
 "));
-end Assignment2b;
+end Assignment2d;

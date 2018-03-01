@@ -328,7 +328,7 @@ Main Author:
       annotation (Line(points={{-12.2,-55},{-9,-55},{-9,-79},{-45,-79}}, color=
             {0,0,255}));
     connect(WastePump.Out, WasteSludge.In) annotation (Line(points={{79,-42.2},
-            {81,-42.2},{81,-42},{83,-42},{83,-42},{87,-42}}));
+            {81,-42.2},{81,-42},{83,-42},{83,-42.2},{87,-42.2}}));
     connect(WastePump.In, Settler.Waste) annotation (Line(points={{59,-48.3},{
             52,-48.3},{52,-31},{61,-31},{61,-4.6}}));
     connect(WastePump.u, Constant2.y)
@@ -350,7 +350,7 @@ Main Author:
                                                                        color={0,
             0,255}));
     connect(tank5.MeasurePort, sensor_O2.In) annotation (Line(points={{9.5,8.5},
-            {9.5,25},{9.5,25}}));
+            {9.5,25}}));
     connect(sensor_TSS1.In, divider.Out1) annotation (Line(points={{40,15},{40,
             6.6}}));
 
