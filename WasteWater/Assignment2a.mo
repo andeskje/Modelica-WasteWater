@@ -478,7 +478,6 @@ equation
   annotation (
     Documentation(info="This component terminates an ASM1 wastewater treatment plant model e.g. the wastewater flow to the receiving water.
     "));
-
 end EffluentSink;
 
 model SludgeSink "Wastesludge sink"

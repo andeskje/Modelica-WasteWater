@@ -507,6 +507,14 @@ model SludgeSink "Wastesludge sink"
   extends WasteWater.Icons.SludgeSink;
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-110,
             -22},{-90,-2}})));
+
+  Modelica.Blocks.Interfaces.RealOutput Qw annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=180,
+        origin={-100,80})));
+equation
+  In.Q = Qw;
+
   annotation (
     Documentation(info="This component terminates the waste sludge stream of an ASM1 wastewater treatment plant model.
 Storage or further sludge treatment is not jet considered."));
@@ -1080,7 +1088,7 @@ Main Author:
 
       WasteWater.Assignment2d.EffluentSink Effluent
         annotation (Placement(transformation(extent={{96,-45},{116,-25}})));
-      WasteWater.Assignment2a.SludgeSink WasteSludge
+      WasteWater.Assignment2d.SludgeSink WasteSludge
         annotation (Placement(transformation(extent={{87,-71},{107,-51}})));
       WasteWater.Assignment2a.SecClarModTakacs Settler
         annotation (Placement(transformation(extent={{48,-25},{68,-5}})));
@@ -1105,7 +1113,8 @@ Main Author:
       Modelica.Blocks.Sources.Constant Constant1(k=55338)
                                                  annotation (Placement(
             transformation(extent={{-93,-76},{-73,-56}})));
-      WasteWater.Assignment2d.pump RecyclePump(Q_max=55338) annotation (
+      WasteWater.Assignment2d.pump RecyclePump(Q_max=55338) "55338"
+                                                            annotation (
           Placement(transformation(
             origin={-84,-32},
             extent={{-10,-10},{10,10}},
@@ -1115,7 +1124,7 @@ Main Author:
             origin={26,-46},
             extent={{-10,-10},{10,10}},
             rotation=180)));
-      WasteWater.Assignment2d.pump WastePump(Q_max=385)
+      WasteWater.Assignment2d.pump WastePump(Q_max=0)
         annotation (Placement(transformation(extent={{59,-75},{79,-55}})));
 
       Modelica.Blocks.Sources.Constant Constant2 annotation (Placement(
@@ -1143,7 +1152,9 @@ Main Author:
         annotation (Placement(transformation(extent={{-86,76},{-66,96}})));
       Modelica.Blocks.Sources.Constant Constant3(k=15)
                                                  annotation (Placement(
-            transformation(extent={{-16,75},{4,95}})));
+            transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-21,80})));
       WasteWater.Assignment2d.AE AE
         annotation (Placement(transformation(extent={{-16,12},{4,32}})));
       WasteWater.Assignment2d.ME ME
@@ -1218,7 +1229,7 @@ Main Author:
       connect(CombiTableTime.y,WWSource. data)
         annotation (Line(points={{-91,86},{-85,86}}));
       connect(tank1.T, Constant3.y) annotation (Line(
-          points={{-76,16},{-77,16},{-77,26},{-56,26},{-56,85},{5,85}},
+          points={{-76,16},{-77,16},{-77,26},{-56,26},{-56,80},{-32,80}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(tank2.T, tank1.T) annotation (Line(
@@ -1267,14 +1278,14 @@ Main Author:
               18,-97},{69,-97},{69,-72}}, color={0,0,127}));
       connect(SP.Inw, WastePump.Out) annotation (Line(points={{81,-79.4},{81,
               -62.2},{79,-62.2}}, color={0,0,255}));
-      connect(SP.Qw, WastePump.Q) annotation (Line(points={{86,-80},{86,-72},{
-              69,-72}}, color={0,0,127}));
       connect(SP.Inu, Settler.Return) annotation (Line(points={{76,-79.4},{55,
               -79.4},{55,-24.6}}, color={0,0,255}));
       connect(EQ.Qe, Effluent.Q) annotation (Line(points={{82.4,-38},{82,-38},{
               82,-29},{96,-29}}, color={0,0,127}));
       connect(IQ.Q0, WWSource.Q0) annotation (Line(points={{-107.6,44},{-75.8,
               44},{-75.8,76.4}}, color={0,0,127}));
+      connect(SP.Qw, WasteSludge.Qw) annotation (Line(points={{86,-80},{87,-80},
+              {87,-53}}, color={0,0,127}));
       annotation (
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
@@ -6656,13 +6667,13 @@ equation
   end if;
 
   if KLa4 < 20 then
-    ME3 = 0.005*1333;
+    ME4 = 0.005*1333;
   else
     ME4 = 0;
   end if;
 
   if KLa5 < 20 then
-    ME3 = 0.005*1333;
+    ME5 = 0.005*1333;
   else
     ME5 = 0;
   end if;
