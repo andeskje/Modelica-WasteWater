@@ -469,9 +469,16 @@ model EffluentSink "Receiving water (river)"
   extends WasteWater.Icons.EffluentSink;
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-110,
             10},{-90,30}})));
+
+  Modelica.Blocks.Interfaces.RealOutput Q(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+equation
+  In.Q = -Q;
+
   annotation (
     Documentation(info="This component terminates an ASM1 wastewater treatment plant model e.g. the wastewater flow to the receiving water.
-"));
+    "));
+
 end EffluentSink;
 
 model SludgeSink "Wastesludge sink"

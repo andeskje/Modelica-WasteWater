@@ -306,13 +306,20 @@ model pump "ASM1 wastewater pump"
   Real H;
   // this is just a help variable to reduce expressions
 
+
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-110,
             -43},{-90,-23}})));
   Interfaces.WWFlowAsm1out Out annotation (Placement(transformation(extent={{90,
             18},{110,38}})));
   Modelica.Blocks.Interfaces.RealInput u annotation (Placement(transformation(
           extent={{-99,15},{-79,35}})));
+
+  Modelica.Blocks.Interfaces.RealOutput Q annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=270,
+        origin={0,-70})));
 equation
+  Q = -Out.Q;
 
   H =0.5*(-Q_min + Q_max) + u*0.5*(-Q_min + Q_max) + Q_min;
   Out.Q = -(if H > Q_max then Q_max else if H < Q_min then Q_min else H);
@@ -411,6 +418,12 @@ model WWSource "Wastewater source"
             -80},{108,-60}})));
   Modelica.Blocks.Interfaces.RealInput data[14]
     annotation (Placement(transformation(extent={{-100,-10},{-80,10}})));
+
+  Modelica.Blocks.Interfaces.RealOutput Q0 annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={2,-96})));
+
 equation
 
   Out.Q =-data[1];
@@ -427,6 +440,9 @@ equation
   Out.Snd =data[12];
   Out.Xnd =data[13];
   Out.Salk =data[14];
+
+
+  Q0 = -Out.Q;
 
   /*
 
@@ -473,6 +489,13 @@ model EffluentSink "Receiving water (river)"
   extends WasteWater.Icons.EffluentSink;
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-110,
             10},{-90,30}})));
+            Modelica.Blocks.Interfaces.RealOutput Q annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=180,
+        origin={-100,60})));
+equation
+  In.Q = Q;
+
   annotation (
     Documentation(info="This component terminates an ASM1 wastewater treatment plant model e.g. the wastewater flow to the receiving water.
 "));
@@ -635,7 +658,10 @@ model mixer3 "Mixer of 3 ASM1 characterised flows"
             -110,-55},{-90,-35}})));
   Interfaces.WWFlowAsm1out Out annotation (Placement(transformation(extent={{90,
             -14},{110,6}})));
+  Modelica.Blocks.Interfaces.RealOutput Q
+    annotation (Placement(transformation(extent={{72,76},{92,96}})));
 equation
+  Q = In2.Q + In3.Q;
 
   In1.Q + In2.Q + In3.Q + Out.Q = 0;
   Out.Si = (In1.Si*In1.Q + In2.Si*In2.Q + In3.Si*In3.Q)/(In1.Q + In2.Q + In3.Q);
@@ -1052,7 +1078,7 @@ Main Author:
       //Q_air=12100.99290780142 is equal to a Kla of 3.5 h^-1 from COST benchmark
       extends Modelica.Icons.Example;
 
-      WasteWater.Assignment2a.EffluentSink Effluent
+      WasteWater.Assignment2d.EffluentSink Effluent
         annotation (Placement(transformation(extent={{96,-45},{116,-25}})));
       WasteWater.Assignment2a.SludgeSink WasteSludge
         annotation (Placement(transformation(extent={{87,-71},{107,-51}})));
@@ -1072,24 +1098,24 @@ Main Author:
         annotation (Placement(transformation(extent={{-48,2},{-28,22}})));
       WasteWater.Assignment2a.deni tank1
         annotation (Placement(transformation(extent={{-76,2},{-56,22}})));
-      WasteWater.Assignment2a.mixer3 mixer
+      WasteWater.Assignment2d.mixer3 mixer
         annotation (Placement(transformation(extent={{-104,2},{-84,22}})));
       WasteWater.Assignment2a.sensor_NO sensor_NO
         annotation (Placement(transformation(extent={{-42,28},{-22,48}})));
       Modelica.Blocks.Sources.Constant Constant1(k=55338)
                                                  annotation (Placement(
             transformation(extent={{-93,-76},{-73,-56}})));
-      WasteWater.Assignment2a.pump RecyclePump(Q_max=55338) annotation (
+      WasteWater.Assignment2d.pump RecyclePump(Q_max=55338) annotation (
           Placement(transformation(
             origin={-84,-32},
             extent={{-10,-10},{10,10}},
             rotation=180)));
-      WasteWater.Assignment2a.pump ReturnPump(Q_max=18446) annotation (
+      WasteWater.Assignment2d.pump ReturnPump(Q_max=18446) annotation (
           Placement(transformation(
             origin={26,-46},
             extent={{-10,-10},{10,10}},
             rotation=180)));
-      WasteWater.Assignment2a.pump WastePump(Q_max=385)
+      WasteWater.Assignment2d.pump WastePump(Q_max=385)
         annotation (Placement(transformation(extent={{59,-75},{79,-55}})));
 
       Modelica.Blocks.Sources.Constant Constant2 annotation (Placement(
@@ -1113,15 +1139,29 @@ Main Author:
         extrapolation=Modelica.Blocks.Types.Extrapolation.HoldLastPoint)
                                              annotation (Placement(transformation(
               extent={{-112,76},{-92,96}})));
-      WasteWater.Assignment2b.WWSource WWSource
+      WasteWater.Assignment2d.WWSource WWSource
         annotation (Placement(transformation(extent={{-86,76},{-66,96}})));
       Modelica.Blocks.Sources.Constant Constant3(k=15)
                                                  annotation (Placement(
             transformation(extent={{-16,75},{4,95}})));
       WasteWater.Assignment2d.AE AE
         annotation (Placement(transformation(extent={{-16,12},{4,32}})));
-      WasteWater.Assignment2d.EQ eQ
-        annotation (Placement(transformation(extent={{68,23},{88,43}})));
+      WasteWater.Assignment2d.ME ME
+        annotation (Placement(transformation(extent={{7,12},{27,32}})));
+      WasteWater.Assignment2d.EQ EQ annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={77,-47})));
+      WasteWater.Assignment2d.IQ IQ
+        annotation (Placement(transformation(extent={{-114,43},{-94,63}})));
+      WasteWater.Assignment2d.PE PE annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-32,-72})));
+      WasteWater.Assignment2d.SP SP annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={81,-89})));
     equation
       connect(divider.Out1, Settler.Feed) annotation (Line(points={{40,-13.4},{
               44,-13.4},{44,-13.6},{48,-13.6}}));
@@ -1209,8 +1249,32 @@ Main Author:
           points={{-1,13},{-1,-8.4},{11.8,-8.4}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(eQ.In, Effluent.In) annotation (Line(points={{78,23},{83,23},{83,
-              -33},{96,-33}}, color={0,0,255}));
+      connect(ME.KLa4, tank3.KLaOut) annotation (Line(points={{12,13},{-24,13},
+              {-24,-7.8},{-42.2,-7.8}}, color={0,0,127}));
+      connect(ME.KLa5, tank5.KLaOut) annotation (Line(points={{22,13},{22,-8.4},
+              {11.8,-8.4}}, color={0,0,127}));
+      connect(ME.KLa3, tank4.KLaOut) annotation (Line(points={{17,13},{-3,13},{
+              -3,-7.8},{-14.2,-7.8}}, color={0,0,127}));
+      connect(Effluent.In, EQ.In) annotation (Line(points={{96,-33},{77,-33},{
+              77,-37}}, color={0,0,255}));
+      connect(mixer.In1, IQ.In)
+        annotation (Line(points={{-104,15.5},{-104,43}}, color={0,0,255}));
+      connect(PE.Qr, ReturnPump.Q) annotation (Line(points={{-37,-63},{-37,-39},
+              {26,-39}}, color={0,0,127}));
+      connect(PE.Qa, RecyclePump.Q) annotation (Line(points={{-32,-63},{-32,-25},
+              {-84,-25}}, color={0,0,127}));
+      connect(PE.Qw, WastePump.Q) annotation (Line(points={{-27,-63},{18,-63},{
+              18,-97},{69,-97},{69,-72}}, color={0,0,127}));
+      connect(SP.Inw, WastePump.Out) annotation (Line(points={{81,-79.4},{81,
+              -62.2},{79,-62.2}}, color={0,0,255}));
+      connect(SP.Qw, WastePump.Q) annotation (Line(points={{86,-80},{86,-72},{
+              69,-72}}, color={0,0,127}));
+      connect(SP.Inu, Settler.Return) annotation (Line(points={{76,-79.4},{55,
+              -79.4},{55,-24.6}}, color={0,0,255}));
+      connect(EQ.Qe, Effluent.Q) annotation (Line(points={{82.4,-38},{82,-38},{
+              82,-29},{96,-29}}, color={0,0,127}));
+      connect(IQ.Q0, WWSource.Q0) annotation (Line(points={{-107.6,44},{-75.8,
+              44},{-75.8,76.4}}, color={0,0,127}));
       annotation (
         Diagram(coordinateSystem(
             preserveAspectRatio=false,
@@ -1721,17 +1785,21 @@ Main Author:
       connect(S8.Up, S9.Dn) annotation (Line(points={{-2.22045e-15,55},{
               -2.22045e-15,59}}));
       connect(S1.PQw, Waste) annotation (Line(points={{17.5,-93},{30,-93},{30,
-              -100}}));
-      connect(S10.Out, Effluent) annotation (Line(points={{35,85.5},{67.5,85.5},{
-              67.5,57},{100,57}}));
+              -96}}));
+      connect(S10.Out, Effluent) annotation (Line(points={{35,85.5},{67.5,85.5},
+              {67.5,57},{102,57}}));
       connect(S1.PQr, Return) annotation (Line(points={{-21,-93},{-30,-93},{-30,
-              -100}}));
-      connect(S4.Dn, S3.Up) annotation (Line(points={{0,-36},{0,-40}}));
-      connect(S4.Up, S5.Dn) annotation (Line(points={{-2,-22},{-2,-16}}));
-      connect(S5.Up, S6.Dn) annotation (Line(points={{0,-4},{0,2}}));
-      connect(S6.Up, S7.Dn) annotation (Line(points={{0,16},{0,21}}));
-      connect(Feed, S4.In) annotation (Line(points={{-100,10},{-67.5,10},{-67.5,
-              -28.72},{-35,-28.72}}));
+              -96}}));
+      connect(S4.Dn, S3.Up) annotation (Line(points={{-1,-36},{-1,-38},{0,-38},
+              {0,-40}}));
+      connect(S4.Up, S5.Dn) annotation (Line(points={{-1,-22},{-2,-22},{-2,-22},
+              {0,-22},{-2,-22},{-2,-16}}));
+      connect(S5.Up, S6.Dn) annotation (Line(points={{-1,-4},{-2,-4},{-2,-4},{
+              -2,-2},{0,-2},{0,2}}));
+      connect(S6.Up, S7.Dn) annotation (Line(points={{-1,16},{-1,18},{0,18},{0,
+              21}}));
+      connect(Feed, S4.In) annotation (Line(points={{-100,14},{-67.5,14},{-67.5,
+              -28.72},{-36,-28.72}}));
 
       // total sludge concentration in clarifier feed
       Xf = 0.75*(Feed.Xs + Feed.Xbh + Feed.Xba + Feed.Xp + Feed.Xi);
@@ -6468,34 +6536,41 @@ end nitri_34;
 model EQ "What is this"
 
   extends WasteWater.Icons.sensor_O2;
-/*
-  constant Real B_SS = 2;
-  constant Real B_COD = 1;
-  constant Real B_Nkj = 30;
-  constant Real B_NO = 10;
-  constant Real B_BOD5 = 2;
-  constant Real ixb = 0.08;
-  constant Real ixp = 0.06;
-  */
+
   Real S_Nkje;
   Real SSe;
   Real BOD_5e;
   Real COD_e;
 
-  Modelica.Blocks.Interfaces.RealOutput EQ( start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+  constant Real fp = 0.08;
+  constant Real iXB = 0.08;
+  constant Real iXP = 0.06;
+  constant Real BSS = 2;
+  constant Real BCOD = 1;
+  constant Real BNKj = 30;
+  constant Real BNO = 10;
+  constant Real BCOD5 = 2;
+
+  Modelica.Blocks.Interfaces.RealOutput EQ(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+  Modelica.Blocks.Interfaces.RealInput Qe(start=0) annotation (Placement(transformation(extent={{-10,-10},
+              {10,10}},
+          rotation=270,
+          origin={-54,-90})));
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-10,
             -110},{10,-90}})));
   Real T(start=1e-3);
 
-equation
 
-  S_Nkje = In.Snh + In.Snd + In.Xnd + 0.08 * ( In.Xbh + In.Xba) + 0.06 * ( In.Xp + In.Xi);
+equation
+  In.Q = 0;
+
+  S_Nkje = In.Snh + In.Snd + In.Xnd + iXB * ( In.Xbh + In.Xba) + iXP * ( In.Xp + In.Xi);
   SSe = 0.75 * (In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp);
-  BOD_5e = 0.25 * ( In.Ss + In.Xi + In.Xbh + In.Xba + In.Xp);
+  BOD_5e = 0.25 * (In.Ss + In.Xi + In.Xbh + In.Xba + In.Xp);
   COD_e = In.Ss + In.Si + In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp;
 
   der(T) = 1.0;
-  der(EQ*T) = 1/1000*(2*SSe + 1*COD_e + 30*S_Nkje +  10*In.Sno + 2*BOD_5e)*In.Q;
+  der(EQ*T) = 1/1000*(BSS*SSe + BCOD*COD_e + BNKj*S_Nkje +  BNO*In.Sno + BCOD5*BOD_5e)*Qe;
 
   annotation (
     Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
@@ -6564,7 +6639,10 @@ model ME "What is this"
         rotation=270,
         origin={50,-90})));
 
-  Real dummy3=0;
+
+  Real ME3(start=0);
+  Real ME4(start=0);
+  Real ME5(start=0);
 
   Real T(start=1e-3);
 
@@ -6572,14 +6650,24 @@ equation
   der(T) = 1.0;
 
   if KLa3 < 20 then
-    dummy3 = 1333*0.005*KLa3;
+    ME3 = 0.005*1333;
+  else
+    ME3 = 0;
   end if;
 
-  if KLa < 20 then
-    der(ME*T) = 2/(1.8*1000)*1333*(KLa3 + KLa4 + KLa5);
+  if KLa4 < 20 then
+    ME3 = 0.005*1333;
   else
-    der(ME*T) = 0;
+    ME4 = 0;
   end if;
+
+  if KLa5 < 20 then
+    ME3 = 0.005*1333;
+  else
+    ME5 = 0;
+  end if;
+
+  der(ME*T) = 24*(ME3 + ME4 + ME5);
 
   annotation (
     Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
@@ -6641,27 +6729,40 @@ model IQ "What is this"
   constant Real ixb = 0.08;
   constant Real ixp = 0.06;
   */
-  Real S_Nkje;
-  Real SSe;
-  Real BOD_5e;
-  Real COD_e;
+  Real S_Nkj0;
+  Real SS0;
+  Real BOD0;
+  Real COD0;
+
+  constant Real fp = 0.08;
+  constant Real iXB = 0.08;
+  constant Real iXP = 0.06;
+  constant Real BSS = 2;
+  constant Real BCOD = 1;
+  constant Real BNKj = 30;
+  constant Real BNO = 10;
+  constant Real BCOD5 = 2;
 
   Modelica.Blocks.Interfaces.RealOutput IQ(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+  Modelica.Blocks.Interfaces.RealInput Q0(start=0) annotation (Placement(transformation(extent={{-10,-10},
+              {10,10}},
+          rotation=270,
+          origin={-36,-90})));
   Interfaces.WWFlowAsm1in In annotation (Placement(transformation(extent={{-10,
             -110},{10,-90}})));
   Real T(start=1e-3);
 
 equation
+  In.Q = 0;
 
-  S_Nkje = In.Snh + In.Snd + In.Xnd + 0.08 * ( In.Xbh + In.Xba) + 0.06 * ( In.Xp + In.Xi);
-  SSe = 0.75 * (In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp);
-  /*BOD_5e = 0.65 * ( In.Ss + In.Xs + (1-0.08)*          (In.Xbh + In.Xba) ;*/
-                                          /*    feil her */
-
-  COD_e = In.Ss + In.Si + In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp;
+  S_Nkj0 = In.Snh + In.Snd + In.Xnd + iXB * ( In.Xbh + In.Xba) + iXP * ( In.Xp + In.Xi);
+  SS0 = 0.75 * (In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp);
+  BOD0 = 0.65 * ( In.Ss + In.Xs + (1-fp)*          (In.Xbh + In.Xba));
+                                          /*    feil her..? */
+  COD0 = In.Ss + In.Si + In.Xs + In.Xi + In.Xbh + In.Xba + In.Xp;
 
   der(T) = 1.0;
-  der(IQ*T) = 1/1000*(2*SSe + 1*COD_e + 30*S_Nkje +  10*In.Sno + 2*BOD_5e)*In.Q;
+  der(IQ*T) = 1/1000*(BSS*SS0 + BCOD*COD0 + BNKj*S_Nkj0 +  BNO*In.Sno + BCOD5*BOD0)*Q0;
 
   annotation (
     Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
@@ -6710,6 +6811,157 @@ further processed with blocks of the Modelica.Blocks library).
         Text(extent={{-80,100},{80,60}}, textString=
                                              "%name")}));
 end IQ;
+
+model PE "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+
+  Modelica.Blocks.Interfaces.RealOutput PE(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+  Modelica.Blocks.Interfaces.RealInput Qa annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={0,-90})));
+  Modelica.Blocks.Interfaces.RealInput Qw annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={-50,-90})));
+  Modelica.Blocks.Interfaces.RealInput Qr annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={50,-90})));
+
+  Real T(start=1e-3);
+
+equation
+  der(T) = 1.0;
+
+  der(PE*T) = (0.004*Qa + 0.008*Qr + 0.05*Qw);
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          textString="Kla",
+          lineColor={0,0,0}),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end PE;
+
+model SP "What is this"
+
+  extends WasteWater.Icons.sensor_O2;
+
+  Modelica.Blocks.Interfaces.RealOutput SP(start=0) annotation (Placement(transformation(extent={{88,-10},{108,10}})));
+
+  Interfaces.WWFlowAsm1in Inw annotation (Placement(transformation(extent={{-10,-106},
+            {10,-86}})));
+  Interfaces.WWFlowAsm1in Inu annotation (Placement(transformation(extent={{40,-106},
+            {60,-86}})));
+  Modelica.Blocks.Interfaces.RealInput Qw annotation (Placement(transformation(extent={{-10,-10},
+            {10,10}},
+        rotation=270,
+        origin={-50,-90})));
+
+
+  Real T(start=1e-3);
+
+
+
+equation
+  Inw.Q = 0;
+  Inu.Q = 0;
+
+  der(T) = 1.0;
+
+  der(SP*T) = 0.75*(Inw.Xs + Inu.Xi + Inw.Xbh + Inw.Xba)*Qw;
+
+
+  annotation (
+    Documentation(info="This component measures the dissolved oxygen concentration [g/m3]
+of ASM1 wastewater and provides the result as output signal (to be
+further processed with blocks of the Modelica.Blocks library).
+"), Diagram(coordinateSystem(
+        preserveAspectRatio=false,
+        extent={{-100,-100},{100,100}},
+        grid={2,2}), graphics={
+        Ellipse(
+          extent={{-50,50},{50,-50}},
+          lineColor={0,0,0},
+          lineThickness=0.5,
+          fillColor={223,223,159},
+          fillPattern=FillPattern.Solid),
+        Line(
+          points={{0,50},{0,38}},
+          thickness=0.5),
+        Line(
+          points={{-50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{50,0},{38,0}},
+          thickness=0.5),
+        Line(
+          points={{-36,34},{-28,26}},
+          thickness=0.5),
+        Line(
+          points={{34,36},{26,28}},
+          thickness=0.5),
+        Line(
+          points={{0,0},{26,28}},
+          thickness=0.5),
+        Polygon(
+          points={{30,32},{10,24},{24,12},{30,32}},
+          lineColor={0,0,0},
+          fillColor={0,0,0},
+          fillPattern=FillPattern.Solid),
+        Text(extent={{-34,-10},{38,-32}},
+          lineColor={0,0,0},
+          textString="SP"),
+        Line(
+          points={{0,-50},{0,-90}},
+          thickness=0.5),
+        Line(points={{50,0},{88,0}}),
+        Text(extent={{-80,100},{80,60}}, textString=
+                                             "%name")}));
+end SP;
 annotation (
   Documentation(info="This library contains components to build models of biological municipal
 wastewater treatment plants based on the Activated Sludge Model No.1 (ASM1) by the
